@@ -149,7 +149,8 @@ export function lensWorld(L) {
 
 // Scroll timeline (fractions of the dive section).
 export const TIMELINE = {
-  fly: [0.02, 0.38], // all four photos leave together...
-  dive: [0.02, 0.97], // ...while the camera starts zooming into the lens
-  iris: [0.36, 0.58], // blades open all the way
+  fly: [0.012, 0.23], // all four photos leave together...
+  dive: [0.012, 0.66], // ...while the camera zooms into the lens and out of the far end
+  iris: [0.22, 0.35], // blades open all the way
+  space: [0.66, 1], // coasting out into the stars
 };

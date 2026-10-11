@@ -11,7 +11,7 @@ export default function App() {
         className="stage"
         flat
         dpr={[1, 2]}
-        camera={{ fov: FOV, position: [0, 0, CAM_Z], near: 0.05, far: 120 }}
+        camera={{ fov: FOV, position: [0, 0, CAM_Z], near: 0.05, far: 220 }}
         gl={{ antialias: false, powerPreference: 'high-performance' }}
       >
         <Suspense fallback={null}>

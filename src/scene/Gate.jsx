@@ -222,14 +222,15 @@ function Lens({ S }) {
   );
   const frontGlass = useMemo(() => glass(1.1), []);
   const innerGlass = useMemo(() => coatingMaterial(), []);
-  const glow = useMemo(() => {
-    const m = new THREE.MeshBasicMaterial({ toneMapped: false, transparent: true });
-    m.color.setRGB(2.4, 2.0, 1.55);
+  // the wall around the barrel's open far end (faces the camera)
+  const endWall = useMemo(() => {
+    const m = M.cavity.clone();
+    m.side = THREE.FrontSide;
     return m;
-  }, []);
+  }, [M]);
   useEffect(
-    () => () => [irisMat, frontGlass, innerGlass, glow].forEach((m) => m.dispose()),
-    [irisMat, frontGlass, innerGlass, glow],
+    () => () => [irisMat, frontGlass, innerGlass, endWall].forEach((m) => m.dispose()),
+    [irisMat, frontGlass, innerGlass, endWall],
   );
 
   const r = LENS.r * S;
@@ -244,9 +245,6 @@ function Lens({ S }) {
     irisMat.uniforms.uAperture.value = 0.62 + 0.38 * open;
     irisMat.uniforms.uClear.value = open;
     frontGlass.opacity = 1 - open;
-    // the light at the end of the barrel stays faint behind the title and only
-    // swells once we've flown past it
-    glow.opacity = 0.1 + 0.9 * easeInOut(range(anim.p, 0.86, TIMELINE.dive[1]));
   });
 
   return (
@@ -291,9 +289,9 @@ function Lens({ S }) {
         </group>
       ))}
       <TunnelTitle r={r} z={-TITLE_AT * len} />
-      {/* light at the end of the lens */}
-      <mesh position={[0, 0, -len]} material={glow}>
-        <circleGeometry args={[r * 0.6, 64]} />
+      {/* the far end is open: it looks out onto the stars */}
+      <mesh position={[0, 0, -len]} material={endWall}>
+        <ringGeometry args={[r * 1.01, 0.8 * S, 64]} />
       </mesh>
     </group>
   );
@@ -334,8 +332,8 @@ export default function Gate({ L }) {
 
   return (
     <group position={[L.cx * k, L.cy * k, -DEPTH]} scale={k}>
-      {/* the dark box behind the opening (deep enough to hold the lens barrel) */}
-      <mesh position={[0, 0, -cavityDepth / 2]} material={M.cavity}>
+      {/* the dark box behind the opening (deep enough to hold the lens barrel; open at the back) */}
+      <mesh position={[0, 0, -cavityDepth / 2]} material={[M.cavity, M.cavity, M.cavity, M.cavity, M.cavity, M.hidden]}>
         <boxGeometry args={[gw, gh, cavityDepth]} />
       </mesh>
 
