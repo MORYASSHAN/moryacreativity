@@ -10,8 +10,11 @@ import { PHOTOS } from '../photos.js';
 import Facet from './Facet.jsx';
 import Gate from './Gate.jsx';
 import Galaxy from './Galaxy.jsx';
+<<<<<<< HEAD
 import Constellation from './Constellation.jsx';
 import { G, direction } from '../galaxy.js';
+=======
+>>>>>>> 21c1f2f8b3fa1d6b7418bbc8c15eaf971715f44e
 import { Body, Dials, Interior, Seams } from './Body.jsx';
 
 function Environment() {
@@ -44,6 +47,7 @@ function ScrollDriver() {
 // How fast the camera leaves the far end of the barrel, relative to an even pace.
 const EXIT_SPEED = 2;
 
+<<<<<<< HEAD
 // Key points of the dive: where the gate fills the view, how far the camera coasts
 // past the lens, and where it finally comes to rest.
 function divePath(L, lens) {
@@ -60,6 +64,11 @@ function divePath(L, lens) {
 function CameraDive({ L }) {
   const lens = useMemo(() => lensWorld(L), [L]);
   const look = useMemo(() => new THREE.Vector3(), []);
+=======
+// Camera stays perfectly still until the dive, then glides down the lens axis.
+function CameraDive({ L }) {
+  const lens = useMemo(() => lensWorld(L), [L]);
+>>>>>>> 21c1f2f8b3fa1d6b7418bbc8c15eaf971715f44e
   useFrame(({ camera }) => {
     const [a, b] = TIMELINE.dive;
     const [, flyEnd] = TIMELINE.fly;
@@ -67,16 +76,28 @@ function CameraDive({ L }) {
     // 1) in step with the photos flying out: push in until the gate fills the view
     // 2) then: through the iris and down the barrel, still moving as it leaves the end
     // 3) coast out into the stars at that same speed, settling into a slow drift
+<<<<<<< HEAD
     const { gateFillZ, coast } = divePath(L, lens);
     const q1 = easeInOut(range(anim.p, a, flyEnd));
     const x2 = range(anim.p, flyEnd, b);
     const q2 = x2 * x2 * (3 - 2 * x2) + EXIT_SPEED * (x2 * x2 * x2 - x2 * x2);
+=======
+    const gateFillZ = -DEPTH + (L.gh * GATE_SCALE * 0.62) / Math.tan(((FOV / 2) * Math.PI) / 180);
+    const q1 = easeInOut(range(anim.p, a, flyEnd));
+    const x2 = range(anim.p, flyEnd, b);
+    const q2 = x2 * x2 * (3 - 2 * x2) + EXIT_SPEED * (x2 * x2 * x2 - x2 * x2);
+    const coast = (EXIT_SPEED * (gateFillZ - lens.end) * (c - b)) / (3 * (b - flyEnd));
+>>>>>>> 21c1f2f8b3fa1d6b7418bbc8c15eaf971715f44e
     const q3 = easeOut(range(anim.p, b, c));
     const z = CAM_Z + (gateFillZ - CAM_Z) * q1 + (lens.end - gateFillZ) * q2 - coast * q3;
     const aim = q1;
     camera.position.set(lens.x * aim, lens.y * aim, z);
+<<<<<<< HEAD
     direction(G.yaw, G.pitch, look).multiplyScalar(10).add(camera.position);
     camera.lookAt(look);
+=======
+    camera.lookAt(lens.x * aim, lens.y * aim, camera.position.z - 10);
+>>>>>>> 21c1f2f8b3fa1d6b7418bbc8c15eaf971715f44e
     const fov = FOV + 14 * easeInOut(range(anim.p, flyEnd, b));
     if (Math.abs(camera.fov - fov) > 1e-3) {
       camera.fov = fov;
@@ -110,7 +131,10 @@ function Effects() {
 export default function Scene() {
   const size = useThree((s) => s.size);
   const L = useMemo(() => computeLayout(size.width / size.height), [size.width, size.height]);
+<<<<<<< HEAD
   const end = useMemo(() => divePath(L, lensWorld(L)).end, [L]);
+=======
+>>>>>>> 21c1f2f8b3fa1d6b7418bbc8c15eaf971715f44e
 
   const textures = useLoader(
     THREE.TextureLoader,
@@ -148,7 +172,10 @@ export default function Scene() {
       <Seams L={L} />
       <Gate L={L} />
       <Galaxy L={L} />
+<<<<<<< HEAD
       <Constellation end={end} />
+=======
+>>>>>>> 21c1f2f8b3fa1d6b7418bbc8c15eaf971715f44e
       <Effects />
     </>
   );

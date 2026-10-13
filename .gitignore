@@ -22,9 +22,12 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+<<<<<<< HEAD
 
 # Vercel
 .vercel
 
 # debug output from scripts
 scripts/.debug
+=======
+>>>>>>> 21c1f2f8b3fa1d6b7418bbc8c15eaf971715f44e
