@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#000000" />
+    <title>Shaan — Moryasshan</title>
+    <meta name="description" content="Shaan's universe of websites, landing pages and interactive stories — live sites and concept pages, designed and coded by hand." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23000'/%3E%3Ccircle cx='16' cy='16' r='4' fill='%23ece7df'/%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="locked pre">
+    <h1 class="sr-only">Shaan — websites, landing pages and interactive stories</h1>
+
+    <div class="gate" id="gate" role="button" tabindex="0" aria-label="Enter with sound">
+      <div class="pulse" aria-hidden="true"></div>
+      <div class="stair" aria-hidden="true"></div>
+      <button class="skip" id="skip">Enter without sound</button>
+    </div>
+
+    <div class="welcome" id="welcome" aria-hidden="true">
+      <div class="lock">
+        <span class="row"><span class="w sm">Welcome</span></span>
+        <span class="row"><span class="w sm">to</span><span class="w lg">Shaan’s</span><span class="w sm">universe</span></span>
+        <span class="row"><span class="w sm">of</span><span class="w lg">Websites</span><span class="w dot">·</span><span class="w lg">Landing pages</span><span class="w sm">and</span><span class="w lg">Stories</span></span>
+        <span class="row"><span class="w sm">crafted in</span><span class="w lg">Code</span></span>
+      </div>
+    </div>
+
+    <div class="world" id="world" aria-hidden="true"><div class="scene" id="scene"></div></div>
+    <div class="vignette" aria-hidden="true"></div>
+
+    <button class="hub" id="hub" data-open="work"><span class="plus" aria-hidden="true"></span>Index view</button>
+
+    <div class="info" id="info" aria-live="polite">
+      <span class="kind" id="info-kind"></span>
+      <h2 id="info-title"></h2>
+      <p id="info-line"></p>
+      <div class="acts">
+        <a class="link" id="info-more" href="#" data-nav>Learn more</a>
+        <a class="link" id="info-open" href="#" target="_blank" rel="noopener">Visit live ↗</a>
+      </div>
+    </div>
+
+    <div class="hint" id="hint">Scroll to travel<br />Drag to look around</div>
+    <div class="counter" id="counter"><b id="count-now">01</b> / <span id="count-all">11</span><br />projects</div>
+
+    <script type="module" src="gallery.js"></script>
+  </body>
+</html>

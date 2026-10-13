@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hanami 花見 — A slow spring through Japan's castle towns</title>
+<meta name="description" content="Hanami is a seven-day slow journey through Japan's castle towns in cherry-blossom season: ryokan nights, moat boats at dusk and a route timed to the bloom front.">
+<meta name="theme-color" content="#f6f1ea">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Shippori+Mincho:wght@400;500;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="back-link" href="../../../#galaxy">← Back to the galaxy</a>
+
+<canvas id="petals" aria-hidden="true"></canvas>
+
+<!-- shared SVG filters -->
+<svg class="defs" width="0" height="0" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="roughSeal" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.55" numOctaves="2" seed="3" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="2.2" xChannelSelector="R" yChannelSelector="G" result="d"/>
+      <feTurbulence type="fractalNoise" baseFrequency="0.06" numOctaves="2" seed="11" result="blot"/>
+      <feColorMatrix in="blot" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -1.1 1.4" result="blotA"/>
+      <feComposite in="d" in2="blotA" operator="in"/>
+    </filter>
+    <filter id="duotone" color-interpolation-filters="sRGB">
+      <feColorMatrix type="matrix" values="0.33 0.33 0.33 0 0  0.33 0.33 0.33 0 0  0.33 0.33 0.33 0 0  0 0 0 1 0"/>
+      <feComponentTransfer>
+        <feFuncR type="table" tableValues="0.106 0.357 0.949"/>
+        <feFuncG type="table" tableValues="0.102 0.435 0.722"/>
+        <feFuncB type="table" tableValues="0.122 0.659 0.776"/>
+      </feComponentTransfer>
+    </filter>
+  </defs>
+</svg>
+
+<header class="nav" id="top">
+  <a class="nav__brand" href="#top" aria-label="Hanami — home">
+    <span class="nav__seal" aria-hidden="true">花</span>
+    <span class="nav__word">Hanami</span>
+    <span class="nav__jp" aria-hidden="true">花見</span>
+  </a>
+  <nav class="nav__links" aria-label="Sections">
+    <a href="#journey">The journey</a>
+    <a href="#bloom">Bloom front</a>
+    <a href="#stays">Stays</a>
+    <a class="nav__cta" href="#reserve">Reserve</a>
+  </nav>
+</header>
+
+<main>
+  <!-- ============ HERO ============ -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero__stage">
+      <p class="hero__vert hero__vert--left" lang="ja" aria-hidden="true">城下町の春を、ゆっくりと歩く。</p>
+      <svg class="enso" id="enso" viewBox="0 0 600 600" role="img" aria-label="A white castle at dusk framed by cherry blossoms, revealed inside a hand-brushed ensō circle">
+        <defs>
+          <filter id="brushEdge" x="-15%" y="-15%" width="130%" height="130%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.028" numOctaves="3" seed="7" result="n"/>
+            <feDisplacementMap in="SourceGraphic" in2="n" scale="26" xChannelSelector="R" yChannelSelector="G"/>
+          </filter>
+          <filter id="inkEdge" x="-10%" y="-10%" width="120%" height="120%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="2" seed="4" result="n"/>
+            <feDisplacementMap in="SourceGraphic" in2="n" scale="5" xChannelSelector="R" yChannelSelector="G"/>
+          </filter>
+          <filter id="photoGrain" x="0" y="0" width="100%" height="100%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="2" stitchTiles="stitch"/>
+            <feColorMatrix type="saturate" values="0"/>
+          </filter>
+          <radialGradient id="photoVignette" cx="50%" cy="50%" r="50%">
+            <stop offset="0.6" stop-color="#1b1a1f" stop-opacity="0"/>
+            <stop offset="1" stop-color="#1b1a1f" stop-opacity="0.45"/>
+          </radialGradient>
+          <mask id="photoMask" maskUnits="userSpaceOnUse" x="0" y="0" width="600" height="600">
+            <rect width="600" height="600" fill="#000"/>
+            <g filter="url(#brushEdge)">
+              <circle id="ensoDisk" cx="300" cy="300" r="0" fill="#fff"/>
+              <path id="ensoPhotoStroke" class="enso-draw" fill="none" stroke="#fff" stroke-width="58" stroke-linecap="butt" pathLength="1"/>
+            </g>
+          </mask>
+          <mask id="inkMask" maskUnits="userSpaceOnUse" x="0" y="0" width="600" height="600">
+            <rect width="600" height="600" fill="#000"/>
+            <path id="ensoInkReveal" class="enso-draw" fill="none" stroke="#fff" stroke-width="96" stroke-linecap="butt" pathLength="1"/>
+          </mask>
+        </defs>
+        <g mask="url(#photoMask)">
+          <g class="enso__photo">
+            <image href="../../assets/img/castle.webp" x="-130" y="18" width="846" height="564" preserveAspectRatio="xMidYMid slice"/>
+            <rect width="600" height="600" fill="#5b6fa8" opacity="0.08" style="mix-blend-mode:multiply"/>
+            <rect width="600" height="600" fill="url(#photoVignette)"/>
+            <rect width="600" height="600" filter="url(#photoGrain)" opacity="0.16" style="mix-blend-mode:overlay"/>
+          </g>
+        </g>
+        <g mask="url(#inkMask)">
+          <path id="ensoInk" fill="#1b1a1f" filter="url(#inkEdge)"/>
+          <g id="ensoDry" fill="none" stroke="#f6f1ea" stroke-linecap="round"></g>
+        </g>
+      </svg>
+      <div class="hero__seal" aria-hidden="true"><span>春</span><span>旅</span></div>
+      <p class="hero__caption" aria-hidden="true"><span>円相</span> Ensō — one breath, one brush</p>
+    </div>
+
+    <div class="hero__copy">
+      <p class="eyebrow"><span class="dot"></span> Spring 2027 &nbsp;·&nbsp; Seven days &nbsp;·&nbsp; Twelve guests</p>
+      <h1 class="hero__title" id="hero-title"><span class="hero__title-l">Hanami</span><span class="sr-only"> — a slow spring through Japan's castle towns</span></h1>
+      <p class="hero__lede">A slow spring through Japan's castle towns. We follow the blossom north by local train and wooden boat, sleeping in ryokan where the bath water comes from the mountain.</p>
+      <div class="hero__actions">
+        <a class="btn btn--ink" href="#journey">Walk the route <span aria-hidden="true">→</span></a>
+        <a class="btn btn--line" href="#reserve">Request a place</a>
+      </div>
+    </div>
+
+    <div class="hero__aside" aria-hidden="true">
+      <p class="hero__big-jp" lang="ja">花見</p>
+      <p class="hero__vert hero__vert--small" lang="ja">はなみ ・ 花を見ること</p>
+    </div>
+
+    <div class="hero__scroll" aria-hidden="true"><span>Scroll</span><i></i></div>
+  </section>
+
+  <!-- ============ INTRO ============ -->
+  <section class="intro" aria-labelledby="intro-title">
+    <div class="intro__grid">
+      <p class="intro__kanji" lang="ja" aria-hidden="true" data-reveal>一期一会</p>
+      <div class="intro__text">
+        <p class="label" data-reveal>Ichi-go ichi-e · one time, one meeting</p>
+        <h2 id="intro-title" class="intro__title" data-reveal>The blossom lasts a week. <em>We built the whole journey around that week.</em></h2>
+        <p class="intro__body" data-reveal>Every spring the <em>sakura zensen</em>, the cherry-blossom front, moves north up the archipelago at roughly the pace of a person walking. Hanami travels with it. Seven castle towns, four family-run ryokan, one guide who has made this walk for nineteen springs, and enough empty hours to sit under a tree and do nothing at all.</p>
+      </div>
+      <dl class="intro__stats">
+        <div data-reveal><dt>Days</dt><dd data-count="7">7</dd></div>
+        <div data-reveal><dt>Castle keeps</dt><dd data-count="6">6</dd></div>
+        <div data-reveal><dt>Ryokan nights</dt><dd data-count="6">6</dd></div>
+        <div data-reveal><dt>Guests, at most</dt><dd data-count="12">12</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- ============ JOURNEY ============ -->
+  <section class="journey" id="journey" aria-labelledby="journey-title">
+    <div class="journey__pin">
+      <div class="journey__hud" aria-hidden="true">
+        <span class="journey__hud-day" id="hudDay">一</span>
+        <span class="journey__hud-text"><b id="hudLabel">Day 01 / 07</b><i id="hudPlace">Matsumoto</i></span>
+        <span class="journey__hud-bar"><i id="hudBar"></i></span>
+      </div>
+      <div class="journey__track" id="track">
+        <svg class="journey__route" id="route" aria-hidden="true">
+          <path id="routeGhost" class="route-ghost"/>
+          <path id="routeInk" class="route-ink"/>
+        </svg>
+        <div class="journey__intro">
+          <p class="label">The journey · 七日間</p>
+          <h2 id="journey-title">Seven days,<br><em>north with the bloom.</em></h2>
+          <p>Wednesday 7 April to Tuesday 13 April 2027. Mostly by rail, sometimes on foot, once by boat. Scroll to walk it.</p>
+          <span class="journey__arrow" aria-hidden="true">⟶</span>
+        </div>
+        <!-- stations injected by main.js -->
+        <div class="journey__end">
+          <p class="label">Fin · 終</p>
+          <p class="journey__end-text">You leave Yoshino on the morning train to Kyoto with a pocket full of petals you did not mean to keep.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BLOOM ============ -->
+  <section class="bloom" id="bloom" aria-labelledby="bloom-title">
+    <header class="bloom__head">
+      <p class="label" data-reveal>Bloom forecast · 桜前線</p>
+      <h2 id="bloom-title" data-reveal>Reading the <em>front.</em></h2>
+      <p data-reveal>Average first-bloom and full-bloom dates from three decades of observation. Drag the date to watch the front climb from Kyushu to Hokkaido; the departures are timed to meet it.</p>
+    </header>
+
+    <div class="bloom__grid">
+      <figure class="bloom__map" data-reveal>
+        <div class="bloom__date" aria-live="polite">
+          <span class="bloom__date-jp" id="dateJp">4月4日</span>
+          <span class="bloom__date-en" id="dateEn">Sunday, April 4</span>
+          <span class="bloom__date-note" id="dateNote">Full bloom in Kyoto, Osaka and Nagoya</span>
+        </div>
+        <svg id="map" viewBox="0 0 400 430" role="img" aria-label="Stylised map of Japan with cities coloured by bloom state on the selected date">
+          <defs>
+            <pattern id="halftone" width="6" height="6" patternUnits="userSpaceOnUse">
+              <circle cx="3" cy="3" r="1.05" fill="#1b1a1f" opacity="0.32"/>
+            </pattern>
+            <pattern id="seigaiha" width="28" height="14" patternUnits="userSpaceOnUse">
+              <path d="M0 14a14 14 0 0 1 28 0M4 14a10 10 0 0 1 20 0M8 14a6 6 0 0 1 12 0M-14 7a14 14 0 0 1 28 0M14 7a14 14 0 0 1 28 0" fill="none" stroke="#5b6fa8" stroke-width="0.6" opacity="0.35"/>
+            </pattern>
+            <radialGradient id="bloomGlow">
+              <stop offset="0" stop-color="#f2b8c6" stop-opacity="0.95"/>
+              <stop offset="1" stop-color="#f2b8c6" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <rect width="400" height="430" fill="url(#seigaiha)" opacity="0.55"/>
+          <g id="land"></g>
+          <path id="frontLine" class="front-line"/>
+          <text id="frontLabel" class="front-label">桜前線</text>
+          <g id="cities"></g>
+        </svg>
+        <figcaption>Castle towns on the Hanami route are ringed in vermilion.</figcaption>
+      </figure>
+
+      <div class="bloom__chart" data-reveal>
+        <div class="gantt" id="gantt" role="table" aria-label="Bloom windows by city">
+          <div class="gantt__axis" role="row" aria-hidden="true">
+            <span style="--p:0">Mar 15</span><span style="--p:.303">Apr 1</span><span style="--p:.571">Apr 16</span><span style="--p:.839">May 1</span>
+          </div>
+          <div class="gantt__rows" id="ganttRows"></div>
+          <div class="gantt__marker" id="ganttMarker" aria-hidden="true"></div>
+        </div>
+        <div class="bloom__legend" aria-hidden="true">
+          <span><i class="lg lg--bud"></i>Buds</span><span><i class="lg lg--open"></i>First bloom</span><span><i class="lg lg--full"></i>Full bloom</span><span><i class="lg lg--fall"></i>Petal fall</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="bloom__control">
+      <label for="dateRange" class="label">Date</label>
+      <input type="range" id="dateRange" min="0" max="56" value="20" step="1" aria-valuetext="April 4">
+      <button class="btn btn--line btn--sm" id="playFront" type="button" aria-pressed="false">Play the front ▸</button>
+    </div>
+  </section>
+
+  <!-- ============ STAYS ============ -->
+  <section class="stays" id="stays" aria-labelledby="stays-title">
+    <header class="stays__head">
+      <p class="label" data-reveal>Stays &amp; experiences · 宿と体験</p>
+      <h2 id="stays-title" data-reveal>Rooms that <em>face the garden,</em><br>evenings that face the water.</h2>
+    </header>
+    <div class="stays__grid">
+      <article class="stay stay--a" data-reveal tabindex="0">
+        <div class="stay__art stay__art--moon" aria-hidden="true">
+          <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice">
+            <defs><linearGradient id="skyA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2d3657"/><stop offset=".7" stop-color="#5b6fa8"/><stop offset="1" stop-color="#d9a6b6"/></linearGradient><linearGradient id="mistA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9a6b6" stop-opacity="0"/><stop offset=".55" stop-color="#d9a6b6" stop-opacity=".35"/><stop offset="1" stop-color="#d9a6b6" stop-opacity="0"/></linearGradient></defs>
+            <rect width="400" height="300" fill="url(#skyA)"/>
+            <circle class="moon" cx="300" cy="78" r="30" fill="#f6f1ea"/>
+            <circle cx="314" cy="70" r="27" fill="#3d4a73" opacity=".9"/>
+            <g fill="#f6f1ea" opacity=".7"><circle cx="60" cy="40" r="1"/><circle cx="130" cy="70" r=".8"/><circle cx="210" cy="30" r="1.1"/><circle cx="250" cy="90" r=".7"/><circle cx="360" cy="40" r=".9"/><circle cx="90" cy="110" r=".7"/><circle cx="180" cy="120" r=".6"/></g>
+            <path class="m1" d="M0 210 C30 190 45 160 60 150 C75 160 90 185 110 190 C130 170 150 128 170 120 C195 140 215 190 240 200 C260 185 280 165 300 160 C330 175 370 205 400 220 V300 H0Z" fill="#3d4a73"/>
+            <rect y="180" width="400" height="70" fill="url(#mistA)"/>
+            <path class="m2" d="M0 240 C30 225 55 205 80 200 C105 210 130 232 150 235 C175 225 200 195 220 190 C245 200 270 228 290 230 C310 220 330 207 350 205 C370 212 390 225 400 230 V300 H0Z" fill="#262b45"/>
+            <g fill="#1b1a1f"><path d="M40 262 l8 -26 8 26z M52 264 l6 -18 6 18z M330 260 l9 -30 9 30z M345 262 l6 -20 6 20z"/></g>
+            <path d="M0 252 H400" stroke="#f6f1ea" stroke-opacity=".08"/>
+            <path class="m3" d="M0 268 Q100 250 200 266 T400 262 V300 H0Z" fill="#1b1a1f"/>
+          </svg>
+        </div>
+        <div class="stay__body">
+          <p class="stay__num">壱 · Night 1</p>
+          <h3>Tsukikage-an <span lang="ja">月影庵</span></h3>
+          <p>Six rooms around a moss garden in Matsumoto, run by the same family since 1911. Ask for the moon-viewing room; the bath faces the Alps.</p>
+          <p class="stay__meta">Ryokan · Hinoki bath · Kaiseki</p>
+        </div>
+        <span class="stay__seal" aria-hidden="true">泊</span>
+      </article>
+
+      <article class="stay stay--b" data-reveal tabindex="0">
+        <div class="stay__art stay__art--photo" aria-hidden="true">
+          <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice">
+            <image href="../../assets/img/castle.webp" x="-120" y="-30" width="560" height="373" filter="url(#duotone)" preserveAspectRatio="xMidYMid slice"/>
+            <g class="lanterns">
+              <circle cx="40" cy="250" r="5" fill="#f2b8c6"/><circle cx="110" cy="262" r="4" fill="#f2b8c6"/><circle cx="190" cy="255" r="5" fill="#f2b8c6"/><circle cx="270" cy="266" r="4" fill="#f2b8c6"/><circle cx="350" cy="252" r="5" fill="#f2b8c6"/>
+            </g>
+          </svg>
+        </div>
+        <div class="stay__body">
+          <p class="stay__num">弐 · Day 5</p>
+          <h3>Night boat on the moat <span lang="ja">夜桜舟</span></h3>
+          <p>A flat-bottomed boat poled slowly under lit cherry trees in Hikone, the castle above, warm sake below. The boatman sings if asked twice.</p>
+          <p class="stay__meta">Experience · 50 minutes · After dark</p>
+        </div>
+        <span class="stay__seal" aria-hidden="true">舟</span>
+      </article>
+
+      <article class="stay stay--c" data-reveal tabindex="0">
+        <div class="stay__art stay__art--tea" aria-hidden="true">
+          <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice">
+            <rect width="400" height="300" fill="#efe4d6"/>
+            <circle class="tea-sun" cx="200" cy="150" r="96" fill="#f2b8c6" opacity=".55"/>
+            <path d="M120 160 h160 c-6 60 -40 86 -80 86 s-74 -26 -80 -86z" fill="#1b1a1f"/>
+            <path d="M126 160 h148" stroke="#5f7a4a" stroke-width="10" stroke-linecap="round"/>
+            <path class="steam" d="M180 140 c-14 -20 14 -28 0 -50 M204 136 c-14 -22 14 -30 0 -56 M228 140 c-14 -20 14 -28 0 -50" fill="none" stroke="#1b1a1f" stroke-width="2.4" stroke-linecap="round" opacity=".5"/>
+            <rect x="170" y="246" width="60" height="6" fill="#1b1a1f"/>
+          </svg>
+        </div>
+        <div class="stay__body">
+          <p class="stay__num">参 · Day 3</p>
+          <h3>Dawn tea, before the gates <span lang="ja">朝茶</span></h3>
+          <p>A private tea ceremony in a Kanazawa garden pavilion at six in the morning, an hour before the first visitors, when the only sound is the stream.</p>
+          <p class="stay__meta">Experience · Matcha &amp; wagashi · Sunrise</p>
+        </div>
+        <span class="stay__seal" aria-hidden="true">茶</span>
+      </article>
+
+      <article class="stay stay--d" data-reveal tabindex="0">
+        <div class="stay__art stay__art--hills" aria-hidden="true">
+          <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" id="hillsArt">
+            <rect width="400" height="300" fill="#f6eee6"/>
+            <path d="M0 150 Q90 80 190 130 T400 110 V300 H0Z" fill="#e7d9d4"/>
+            <path d="M0 200 Q110 140 220 190 T400 170 V300 H0Z" fill="#d9c6c8"/>
+            <path d="M0 250 Q120 200 250 240 T400 230 V300 H0Z" fill="#c8b2b8"/>
+            <g id="hillDots"></g>
+          </svg>
+        </div>
+        <div class="stay__body">
+          <p class="stay__num">肆 · Night 6</p>
+          <h3>Kaiseki in the upper grove <span lang="ja">吉野</span></h3>
+          <p>A temple lodging on the ridge of Yoshino, where thirty thousand trees bloom in four bands up the mountain. Twelve courses, one long table, no rush.</p>
+          <p class="stay__meta">Shukubō · Shōjin ryōri · Mountain view</p>
+        </div>
+        <span class="stay__seal" aria-hidden="true">山</span>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============ HAIKU ============ -->
+  <section class="haiku" aria-labelledby="haiku-title">
+    <h2 id="haiku-title" class="sr-only">A haiku by Matsuo Bashō</h2>
+    <div class="haiku__inner" id="haiku">
+      <p class="haiku__jp" lang="ja" data-split="jp">さまざまの<br>事おもひ出す<br>桜かな</p>
+      <div class="haiku__en">
+        <p data-split="en">So many things<br>they bring to mind —<br>cherry blossoms.</p>
+        <p class="haiku__by">Matsuo Bashō · 1688</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RESERVE ============ -->
+  <section class="reserve" id="reserve" aria-labelledby="reserve-title">
+    <div class="reserve__grid">
+      <div class="reserve__copy">
+        <p class="label" data-reveal>Reservations · 予約</p>
+        <h2 id="reserve-title" data-reveal>Twelve guests.<br>Three departures.<br><em>One slow spring.</em></h2>
+        <p data-reveal>From ¥1,280,000 per guest, all ryokan nights, rail, boats, meals and the guide included. A ¥100,000 deposit holds a place and is returned in full if the bloom fails us.</p>
+        <ul class="reserve__deps" data-reveal>
+          <li><b>31 Mar</b> Kyushu &amp; Shikoku <span>4 places left</span></li>
+          <li><b>7 Apr</b> The castle road <span>2 places left</span></li>
+          <li><b>21 Apr</b> Tōhoku &amp; Hokkaido <span>Waitlist</span></li>
+        </ul>
+      </div>
+
+      <form class="reserve__form" id="reserveForm" novalidate data-reveal>
+        <fieldset class="field">
+          <legend class="label">Departure</legend>
+          <div class="pills">
+            <label><input type="radio" name="dep" value="31 Mar"><span>31 Mar</span></label>
+            <label><input type="radio" name="dep" value="7 Apr" checked><span>7 Apr</span></label>
+            <label><input type="radio" name="dep" value="21 Apr"><span>21 Apr</span></label>
+          </div>
+        </fieldset>
+        <div class="field field--row">
+          <div>
+            <span class="label" id="guestsLabel">Guests</span>
+            <div class="stepper" role="group" aria-labelledby="guestsLabel">
+              <button type="button" data-step="-1" aria-label="Fewer guests">−</button>
+              <output id="guests" aria-live="polite">2</output>
+              <button type="button" data-step="1" aria-label="More guests">+</button>
+            </div>
+          </div>
+          <div>
+            <label class="label" for="room">Room</label>
+            <select id="room" name="room">
+              <option>Garden view</option>
+              <option>Moon-viewing room</option>
+              <option>Private onsen suite</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label" for="name">Name</label>
+          <input id="name" name="name" type="text" autocomplete="name" placeholder="Your name" required>
+        </div>
+        <div class="field">
+          <label class="label" for="email">Email</label>
+          <input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+        </div>
+        <button class="btn btn--shu" type="submit">Seal my request <span aria-hidden="true">→</span></button>
+        <p class="form__note">Demo form. Nothing is sent.</p>
+
+        <div class="reserve__done" id="reserveDone" aria-live="polite" hidden>
+          <div class="hanko hanko--stamp" aria-hidden="true"><span>花</span><span>見</span></div>
+          <h3>Your request is sealed.</h3>
+          <p>We will write within two days with the full route, a packing list and a pressed blossom from last spring.</p>
+        </div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="footer__grid">
+    <div class="footer__seal">
+      <svg viewBox="0 0 160 160" class="hanko-svg" role="img" aria-label="Vermilion hanko seal reading 花見">
+        <g filter="url(#roughSeal)">
+          <rect x="10" y="10" width="140" height="140" rx="10" fill="#d6452f"/>
+          <rect x="20" y="20" width="120" height="120" rx="4" fill="none" stroke="#f6f1ea" stroke-width="4"/>
+          <text x="80" y="76" text-anchor="middle" font-family="Shippori Mincho, serif" font-weight="800" font-size="52" fill="#f6f1ea">花</text>
+          <text x="80" y="130" text-anchor="middle" font-family="Shippori Mincho, serif" font-weight="800" font-size="52" fill="#f6f1ea">見</text>
+        </g>
+      </svg>
+    </div>
+    <div class="footer__col">
+      <p class="footer__brand">Hanami Journeys</p>
+      <p>A small atelier of slow travel, working from a machiya in Higashiyama, Kyoto. Spring only. Twelve guests at a time.</p>
+    </div>
+    <div class="footer__col">
+      <p class="label">Wander</p>
+      <a href="#journey">The journey</a><a href="#bloom">Bloom front</a><a href="#stays">Stays</a><a href="#reserve">Reserve</a>
+    </div>
+    <div class="footer__col">
+      <p class="label">Letters</p>
+      <p>One letter each February, when the first forecast is published.</p>
+      <form class="mini-form" id="letterForm">
+        <label class="sr-only" for="letterEmail">Email for letters</label>
+        <input id="letterEmail" type="email" placeholder="Email" required>
+        <button type="submit" aria-label="Subscribe">→</button>
+      </form>
+      <p class="mini-thanks" id="letterThanks" hidden>Thank you. Until February.</p>
+    </div>
+  </div>
+  <div class="footer__base">
+    <span>© 2027 Hanami Journeys — a concept by Moryasshan</span>
+    <span lang="ja">花は桜木、人は武士</span>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+</body>
+</html>

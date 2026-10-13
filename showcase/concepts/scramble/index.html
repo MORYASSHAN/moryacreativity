@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SCRAMBLE / 渋谷 — Tokyo after dark, routed</title>
+<meta name="description" content="Scramble is a Tokyo nightlife and city guide app: tonight's events on a live departure board, neon district guides, rain-covered walking routes and last-train alerts.">
+<meta name="theme-color" content="#07070c">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="back-link" href="../../../#galaxy">← Back to the galaxy</a>
+
+<header class="nav">
+  <a class="nav__logo" href="#top" aria-label="Scramble — home">
+    <span class="nav__mark" aria-hidden="true"><i></i><i></i></span>
+    <span class="nav__word">SCRAMBLE</span>
+    <span class="nav__kana" lang="ja" aria-hidden="true">スクランブル</span>
+  </a>
+  <nav class="nav__links" aria-label="Sections">
+    <a href="#tonight"><span>01</span>Tonight</a>
+    <a href="#districts"><span>02</span>Districts</a>
+    <a href="#app"><span>03</span>The app</a>
+    <a href="#now"><span>04</span>Now</a>
+  </nav>
+  <div class="nav__status" aria-label="Tokyo time and weather">
+    <span class="live-dot" aria-hidden="true"></span>
+    <span class="mono">JST <b class="js-clock">--:--:--</b></span>
+    <span class="mono nav__wx">☂ RAIN 18°</span>
+  </div>
+  <a class="nav__cta" href="#get">Get the app</a>
+</header>
+
+<main id="top">
+  <!-- ================= HERO ================= -->
+  <section class="hero" aria-labelledby="hero-title">
+    <canvas id="city" class="hero__canvas" aria-hidden="true"></canvas>
+    <div class="hero__fx" aria-hidden="true"></div>
+
+    <div class="hero__inner">
+      <p class="hero__kicker mono"><span class="tag">LIVE</span> 35.6595° N, 139.7005° E · SHIBUYA CROSSING · <span class="js-clock">--:--:--</span> JST</p>
+      <h1 id="hero-title" class="hero__title">
+        <span class="glitch" data-text="SCRAMBLE">SCRAMBLE</span>
+        <span class="hero__slash" aria-hidden="true">/</span>
+        <span class="hero__jp" lang="ja">渋谷</span>
+      </h1>
+      <div class="hero__row">
+        <p class="hero__lede">Tokyo after dark, sorted. Bars the size of a closet, gigs in basements, late ramen and the last train home, live in your pocket and re-routed every time the rain changes its mind.</p>
+        <div class="hero__ctas">
+          <a class="btn btn--mag" href="#get">Download free <span aria-hidden="true">↓</span></a>
+          <a class="btn btn--ghost" href="#tonight">Tonight's board</a>
+        </div>
+      </div>
+    </div>
+
+    <aside class="signal" id="signal" aria-live="polite" aria-label="Pedestrian signal">
+      <div class="signal__box" aria-hidden="true">
+        <svg class="signal__man signal__man--stop" viewBox="0 0 40 64"><circle cx="20" cy="8" r="6"/><path d="M12 18h16l2 22h-5l-1 22h-5l-1-22h-1l-1 22h-5l-1-22h-5z"/></svg>
+        <svg class="signal__man signal__man--walk" viewBox="0 0 40 64"><circle cx="22" cy="8" r="6"/><path d="M17 17l9 1 6 13-4 2-5-9-2 12 8 10 2 15h-5l-3-12-6-7-3 8-6 11-4-3 6-12 2-13-4 5-5-2z"/></svg>
+      </div>
+      <div class="signal__info">
+        <p class="signal__state mono"><b id="sigState">STOP</b> <span lang="ja" id="sigJp">止まれ</span></p>
+        <p class="signal__count mono"><span id="sigCount">08</span><small>s</small></p>
+        <p class="signal__crowd mono">~<span id="sigCrowd">0</span> crossing</p>
+      </div>
+      <span class="signal__bar"><i id="sigBar"></i></span>
+    </aside>
+
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker__track">
+        <span>★ 41 events tonight</span><span>☂ rain for ~2 more hours · 18°</span><span>Ginza Line last train 00:14</span><span>Golden Gai: 3 bars just opened seats</span><span>Shimokita vinyl swap moved indoors</span><span>Roppongi: queue at Void Hall ~25 min</span><span>Late ramen: 11 shops open past 03:00</span>
+        <span>★ 41 events tonight</span><span>☂ rain for ~2 more hours · 18°</span><span>Ginza Line last train 00:14</span><span>Golden Gai: 3 bars just opened seats</span><span>Shimokita vinyl swap moved indoors</span><span>Roppongi: queue at Void Hall ~25 min</span><span>Late ramen: 11 shops open past 03:00</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= TONIGHT ================= -->
+  <section class="tonight" id="tonight" aria-labelledby="tonight-title">
+    <div class="sec-head">
+      <p class="sec-num mono">01 / 今夜</p>
+      <h2 id="tonight-title" class="sec-title" data-in><span>Tonight</span><em lang="ja">コンバン</em></h2>
+      <p class="sec-sub" data-in>Forty-one things worth leaving the hotel for, updated every few minutes by the people standing in the queue.</p>
+    </div>
+
+    <div class="board" id="board" data-in>
+      <div class="board__top mono">
+        <span class="board__brand"><i class="live-dot"></i> DEPARTURES · 出発</span>
+        <span>SHIBUYA · SHINJUKU · ROPPONGI · SHIMOKITA</span>
+        <span class="board__clock"><b class="js-clock">--:--:--</b> JST</span>
+      </div>
+      <div class="board__head mono" aria-hidden="true">
+        <span class="c-time">Time</span><span class="c-event">Event</span><span class="c-venue">Venue</span><span class="c-dist">District</span><span class="c-stat">Status</span>
+      </div>
+      <div class="board__rows" id="boardRows" role="table" aria-label="Tonight's events"></div>
+      <div class="board__foot mono">
+        <span>Status updates live from venue staff &amp; door queues</span>
+        <span class="board__legend"><i class="st st--on"></i>On time <i class="st st--board"></i>Boarding <i class="st st--last"></i>Last call <i class="st st--out"></i>Sold out</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= DISTRICTS ================= -->
+  <section class="districts" id="districts" aria-labelledby="districts-title">
+    <div class="sec-head sec-head--row">
+      <div>
+        <p class="sec-num mono">02 / 街</p>
+        <h2 id="districts-title" class="sec-title" data-in><span>Districts</span><em lang="ja">マチ</em></h2>
+      </div>
+      <div class="dist-nav">
+        <button class="icon-btn" type="button" id="distPrev" aria-label="Previous district">←</button>
+        <button class="icon-btn" type="button" id="distNext" aria-label="Next district">→</button>
+      </div>
+    </div>
+
+    <div class="dist-scroller" id="distScroller" tabindex="0" aria-label="District cards, scroll horizontally">
+      <article class="dcard" style="--c:#ff2fa0" tabindex="0">
+        <div class="dcard__top mono"><span>01</span><span>35.66N</span></div>
+        <svg class="dcard__neon" viewBox="0 0 120 120" aria-hidden="true">
+          <path d="M10 30l100 60M10 90l100-60"/><path d="M30 20h60M30 100h60" stroke-dasharray="6 6"/>
+          <path d="M42 62a18 18 0 0 1 36 0zM60 62v20a5 5 0 0 1-10 0"/>
+        </svg>
+        <p class="dcard__kana" lang="ja">シブヤ</p>
+        <h3 class="dcard__name">Shibuya</h3>
+        <p class="dcard__line">Three thousand people every green light. Basement clubs, listening bars, the loudest karaoke in the city.</p>
+        <dl class="dcard__stats mono">
+          <div><dt>Best after</dt><dd>22:00</dd></div>
+          <div><dt>Energy</dt><dd class="meter" style="--v:5">▮▮▮▮▮</dd></div>
+          <div><dt>Lines</dt><dd>JY · G · Z · F</dd></div>
+        </dl>
+        <div class="dcard__reveal">
+          <p class="mono">Tonight's picks</p>
+          <ul><li>Neon Koi city-pop night, B2</li><li>Box 808 karaoke finals</li><li>Standing sushi, open till 04:00</li></ul>
+        </div>
+      </article>
+
+      <article class="dcard" style="--c:#22e6ff" tabindex="0">
+        <div class="dcard__top mono"><span>02</span><span>35.69N</span></div>
+        <svg class="dcard__neon" viewBox="0 0 120 120" aria-hidden="true">
+          <path d="M8 104V60h14V40h12v64M34 104V24h16v80M50 104V50h12v54M62 104V14l14 8v82M76 104V44h14v60M90 104V66h22v38M4 104h112"/>
+          <path d="M66 30h6M66 42h6M66 54h6M38 34h8M38 48h8"/>
+        </svg>
+        <p class="dcard__kana" lang="ja">シンジュク</p>
+        <h3 class="dcard__name">Shinjuku</h3>
+        <p class="dcard__line">The busiest station on earth and the neon canyon east of it. Rooftop shochu, all-night izakaya, side streets that keep going.</p>
+        <dl class="dcard__stats mono">
+          <div><dt>Best after</dt><dd>21:00</dd></div>
+          <div><dt>Energy</dt><dd class="meter" style="--v:4">▮▮▮▮▯</dd></div>
+          <div><dt>Lines</dt><dd>JY · JC · M · S</dd></div>
+        </dl>
+        <div class="dcard__reveal">
+          <p class="mono">Tonight's picks</p>
+          <ul><li>Sky 31 rooftop shochu flight</li><li>Late ramen crawl from Exit 8</li><li>Yakitori alley, smoke included</li></ul>
+        </div>
+      </article>
+
+      <article class="dcard" style="--c:#ffe14a" tabindex="0">
+        <div class="dcard__top mono"><span>03</span><span>35.69N</span></div>
+        <svg class="dcard__neon" viewBox="0 0 120 120" aria-hidden="true">
+          <path d="M6 104V44l12-8 12 8v60M30 104V40l12-8 12 8v64M54 104V46l12-8 12 8v58M78 104V38l12-8 12 8v66M102 104V48l12-6M2 104h116"/>
+          <circle cx="18" cy="58" r="5"/><circle cx="42" cy="54" r="5"/><circle cx="66" cy="60" r="5"/><circle cx="90" cy="52" r="5"/>
+          <path d="M12 80h12v24M36 80h12v24M60 80h12v24M84 80h12v24"/>
+        </svg>
+        <p class="dcard__kana" lang="ja">ゴールデン街</p>
+        <h3 class="dcard__name">Golden Gai</h3>
+        <p class="dcard__line">Two hundred bars in six alleys, most with seven stools. Some charge a seat fee; all of them have a story.</p>
+        <dl class="dcard__stats mono">
+          <div><dt>Best after</dt><dd>23:00</dd></div>
+          <div><dt>Energy</dt><dd class="meter" style="--v:3">▮▮▮▯▯</dd></div>
+          <div><dt>Seats free</dt><dd>~37 now</dd></div>
+        </dl>
+        <div class="dcard__reveal">
+          <p class="mono">Tonight's picks</p>
+          <ul><li>Bar Tsuyu 4F, jazz after rain</li><li>The film-poster bar, 6 seats</li><li>Whisky & vinyl, no menu</li></ul>
+        </div>
+      </article>
+
+      <article class="dcard" style="--c:#7dff9a" tabindex="0">
+        <div class="dcard__top mono"><span>04</span><span>35.66N</span></div>
+        <svg class="dcard__neon" viewBox="0 0 120 120" aria-hidden="true">
+          <circle cx="52" cy="62" r="40"/><circle cx="52" cy="62" r="26"/><circle cx="52" cy="62" r="6"/>
+          <path d="M104 14v40l-26 22M100 10h8"/>
+        </svg>
+        <p class="dcard__kana" lang="ja">シモキタ</p>
+        <h3 class="dcard__name">Shimokita&shy;zawa</h3>
+        <p class="dcard__line">Thrift racks, tiny live houses and curry until late. The neighbourhood where bands play to forty people and mean it.</p>
+        <dl class="dcard__stats mono">
+          <div><dt>Best after</dt><dd>19:00</dd></div>
+          <div><dt>Energy</dt><dd class="meter" style="--v:3">▮▮▮▯▯</dd></div>
+          <div><dt>Lines</dt><dd>OH · IN</dd></div>
+        </dl>
+        <div class="dcard__reveal">
+          <p class="mono">Tonight's picks</p>
+          <ul><li>Vinyl swap & sake at Shelter 99</li><li>Midnight film club, Cine Loft</li><li>Soup curry, open till 02:00</li></ul>
+        </div>
+      </article>
+
+      <article class="dcard" style="--c:#a77bff" tabindex="0">
+        <div class="dcard__top mono"><span>05</span><span>35.66N</span></div>
+        <svg class="dcard__neon" viewBox="0 0 120 120" aria-hidden="true">
+          <path d="M60 6v14M52 20h16l14 84H38zM46 52h28M42 78h36M52 20l22 58M68 20L46 78M42 78l36 26M78 78l-36 26M30 104h60"/>
+          <circle cx="98" cy="22" r="10"/>
+        </svg>
+        <p class="dcard__kana" lang="ja">ロッポンギ</p>
+        <h3 class="dcard__name">Roppongi</h3>
+        <p class="dcard__line">Art museums by day, big rooms and bigger sound systems by night. Dress up a little; the doors notice.</p>
+        <dl class="dcard__stats mono">
+          <div><dt>Best after</dt><dd>00:00</dd></div>
+          <div><dt>Energy</dt><dd class="meter" style="--v:5">▮▮▮▮▮</dd></div>
+          <div><dt>Lines</dt><dd>H · E</dd></div>
+        </dl>
+        <div class="dcard__reveal">
+          <p class="mono">Tonight's picks</p>
+          <ul><li>Techno: Wet Asphalt, Void Hall</li><li>Late gallery opening, 9F</li><li>Dawn DJ set, 01:00 till late</li></ul>
+        </div>
+      </article>
+      <div class="dist-spacer" aria-hidden="true"></div>
+    </div>
+    <div class="dist-progress" aria-hidden="true"><i id="distBar"></i></div>
+  </section>
+
+  <!-- ================= APP ================= -->
+  <section class="app" id="app" aria-labelledby="app-title">
+    <div class="app__grid">
+      <div class="app__copy">
+        <p class="sec-num mono">03 / アプリ</p>
+        <h2 id="app-title" class="sec-title sec-title--sm" data-in><span>The city,<br>routed.</span></h2>
+        <ol class="features">
+          <li data-in><span class="mono">01</span><div><h3>Covered routes</h3><p>Walking directions that stay under arcades, station concourses and awnings. We show you the rain-cover percentage before you leave.</p></div></li>
+          <li data-in><span class="mono">02</span><div><h3>Last-train guard</h3><p>A quiet buzz forty minutes before your last connection, then a louder one at fifteen. After that it shows taxis and all-night spots.</p></div></li>
+          <li data-in><span class="mono">03</span><div><h3>Live doors</h3><p>Queue times, seat counts and cover charges reported by venues and by the people already inside.</p></div></li>
+          <li data-in><span class="mono">04</span><div><h3>Speaks for you</h3><p>One-tap phrase cards for doors and counters: how many, smoking or not, is there a seat fee.</p></div></li>
+        </ol>
+      </div>
+
+      <div class="phone-wrap" id="phoneWrap">
+        <span class="float-tag float-tag--a mono">☂ 82% covered</span>
+        <span class="float-tag float-tag--b mono">Last Ginza Line · 00:14</span>
+        <span class="float-tag float-tag--c mono">Queue · 6 min</span>
+        <div class="phone" id="phone" role="img" aria-label="Scramble app screen showing a dark map of Shibuya with glowing walking routes and a next-stop card">
+          <div class="phone__island"></div>
+          <div class="phone__screen">
+            <div class="ph-status mono"><b class="js-clock-short">23:41</b><span>▮▮▮ 82%</span></div>
+            <div class="ph-head">
+              <div><p class="ph-kana" lang="ja">今夜</p><p class="ph-title">Tonight</p></div>
+              <span class="ph-wx mono">☂ 18°</span>
+            </div>
+            <div class="ph-search mono">⌕ &nbsp;Where to after this?</div>
+            <div class="ph-tabs mono" role="tablist" aria-label="Route mode">
+              <button role="tab" aria-selected="true" data-mode="walk">Walk</button>
+              <button role="tab" aria-selected="false" data-mode="train">Train</button>
+              <button role="tab" aria-selected="false" data-mode="taxi">Taxi</button>
+            </div>
+            <div class="ph-map">
+              <svg viewBox="0 0 280 300" id="phMap" aria-hidden="true">
+                <defs>
+                  <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                  <pattern id="grid" width="14" height="14" patternUnits="userSpaceOnUse"><path d="M14 0H0V14" fill="none" stroke="#ffffff" stroke-opacity=".04"/></pattern>
+                </defs>
+                <rect width="280" height="300" fill="#0b0b14"/>
+                <rect width="280" height="300" fill="url(#grid)"/>
+                <path d="M-10 230 C60 210 90 250 150 236 S250 200 300 214" stroke="#123047" stroke-width="10" fill="none"/>
+                <g id="streets" stroke="#1d1d2c" stroke-linecap="round" fill="none"></g>
+                <path d="M0 150 L280 120" stroke="#2a2a3d" stroke-width="7" fill="none"/>
+                <path d="M120 0 L150 300" stroke="#2a2a3d" stroke-width="7" fill="none"/>
+                <path d="M126 128 L156 132 M128 140 L158 128" stroke="#3a3a52" stroke-width="2" stroke-dasharray="2 2"/>
+                <g class="route" data-route="walk">
+                  <path class="route__glow" d="M140 136 C150 170 120 190 96 206 S60 246 70 268" stroke="#ff2fa0"/>
+                  <path class="route__dash" d="M140 136 C150 170 120 190 96 206 S60 246 70 268" stroke="#ff2fa0"/>
+                </g>
+                <g class="route" data-route="train">
+                  <path class="route__glow" d="M140 136 L200 110 L248 60" stroke="#22e6ff"/>
+                  <path class="route__dash" d="M140 136 L200 110 L248 60" stroke="#22e6ff"/>
+                </g>
+                <g class="route" data-route="taxi">
+                  <path class="route__glow" d="M140 136 L134 80 C132 60 100 40 60 36" stroke="#ffe14a"/>
+                  <path class="route__dash" d="M140 136 L134 80 C132 60 100 40 60 36" stroke="#ffe14a"/>
+                </g>
+                <g class="pins">
+                  <g class="pin" style="--c:#ff2fa0" transform="translate(70 268)"><circle r="10" class="pin__pulse"/><circle r="4"/></g>
+                  <g class="pin" style="--c:#22e6ff" transform="translate(248 60)"><circle r="10" class="pin__pulse"/><circle r="4"/></g>
+                  <g class="pin" style="--c:#ffe14a" transform="translate(60 36)"><circle r="10" class="pin__pulse"/><circle r="4"/></g>
+                  <g class="pin pin--sm" style="--c:#a77bff" transform="translate(210 230)"><circle r="3"/></g>
+                  <g class="pin pin--sm" style="--c:#7dff9a" transform="translate(40 120)"><circle r="3"/></g>
+                  <g class="pin pin--sm" style="--c:#ff2fa0" transform="translate(220 170)"><circle r="3"/></g>
+                </g>
+                <g class="me" transform="translate(140 136)"><path d="M0 0 L-16 -34 A36 36 0 0 1 16 -34Z" fill="#22e6ff" opacity=".18"/><circle r="9" fill="#22e6ff" opacity=".25"/><circle r="5" fill="#fff" stroke="#22e6ff" stroke-width="2"/></g>
+                <g id="mapRain" stroke="#9fdcff" stroke-opacity=".25"></g>
+              </svg>
+              <span class="ph-chip mono" id="phChip">8 MIN · 82% COVERED</span>
+            </div>
+            <div class="ph-card">
+              <div class="ph-card__row">
+                <div>
+                  <p class="mono ph-card__kicker" id="phKicker">NEXT · 21:30 · JAZZ</p>
+                  <p class="ph-card__title" id="phTitle">Bar Tsuyu 4F</p>
+                  <p class="mono ph-card__meta" id="phMeta">Golden Gai · 7 seats · ¥800 seat fee</p>
+                </div>
+                <button class="ph-go mono" type="button" tabindex="-1">GO</button>
+              </div>
+            </div>
+            <div class="ph-tabbar" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= NOW ================= -->
+  <section class="now" id="now" aria-labelledby="now-title">
+    <h2 id="now-title" class="sr-only">Right now in Tokyo</h2>
+    <div class="now__grid">
+      <div class="now__clock">
+        <p class="mono now__label"><span class="live-dot"></span> Right now in Tokyo · 東京</p>
+        <p class="now__time" aria-live="off"><span class="js-clock-big">--:--</span><small class="js-clock-sec">:--</small></p>
+        <p class="mono now__date" id="nowDate">— JST</p>
+      </div>
+      <div class="now__wx">
+        <svg class="now__cloud" viewBox="0 0 120 90" aria-hidden="true">
+          <path d="M30 56a18 18 0 0 1 4-35 26 26 0 0 1 49 6 16 16 0 0 1 7 29z" fill="none" stroke="#22e6ff" stroke-width="3" stroke-linejoin="round"/>
+          <g class="now__drops" stroke="#22e6ff" stroke-width="3" stroke-linecap="round"><path d="M38 66l-4 10"/><path d="M58 66l-4 10"/><path d="M78 66l-4 10"/></g>
+        </svg>
+        <p class="now__temp">RAIN <b>18°</b></p>
+        <ul class="now__facts mono">
+          <li><span>Humidity</span><b>92%</b></li>
+          <li><span>Dry spell</span><b>in ~2 h</b></li>
+          <li><span>Last Ginza Line</span><b>00:14</b></li>
+          <li><span>Sunrise</span><b>05:41</b></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= GET ================= -->
+  <section class="get" id="get" aria-labelledby="get-title">
+    <div class="get__inner">
+      <h2 id="get-title" class="get__title" data-in><span class="glitch" data-text="GET LOST.">GET LOST.</span><br><span class="get__outline">PROPERLY.</span></h2>
+      <div class="get__grid">
+        <p class="get__copy" data-in>Free on iOS and Android. Works offline underground, speaks English, Japanese and Korean, and never sells where you went last night.</p>
+        <div class="get__actions" data-in>
+          <a class="store" href="#get" aria-label="Download on iOS (demo)"><span class="store__ic" aria-hidden="true">▲</span><span><small>Download for</small>iOS</span></a>
+          <a class="store" href="#get" aria-label="Get it on Android (demo)"><span class="store__ic" aria-hidden="true">▶</span><span><small>Get it for</small>Android</span></a>
+          <form class="sms" id="smsForm" novalidate>
+            <label class="sr-only" for="smsEmail">Email me the link</label>
+            <input id="smsEmail" type="email" placeholder="Email me the link" required>
+            <button type="submit" class="mono">Send</button>
+          </form>
+          <p class="sms__ok mono" id="smsOk" hidden>✓ Link on its way. See you at the crossing.</p>
+        </div>
+        <figure class="qr" data-in>
+          <canvas id="qr" width="168" height="168" aria-hidden="true"></canvas>
+          <figcaption class="mono">Scan to install<br><span>(demo code)</span></figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <p class="footer__word" aria-hidden="true">SCRAMBLE</p>
+  <div class="footer__grid">
+    <div>
+      <p class="mono footer__h">Scramble Tokyo</p>
+      <p>A city guide for the hours after nine. Made in Shibuya by people who missed too many last trains.</p>
+    </div>
+    <div>
+      <p class="mono footer__h">Explore</p>
+      <a href="#tonight">Tonight</a><a href="#districts">Districts</a><a href="#app">The app</a><a href="#now">Now</a>
+    </div>
+    <div>
+      <p class="mono footer__h">For venues</p>
+      <a href="#get">List your night</a><a href="#get">Door reporter</a><a href="#get">Press kit</a>
+    </div>
+    <div>
+      <p class="mono footer__h">Language</p>
+      <div class="lang mono" role="group" aria-label="Language (demo)"><button type="button" aria-pressed="true">EN</button><button type="button" aria-pressed="false" lang="ja">日本語</button><button type="button" aria-pressed="false" lang="ko">한국어</button></div>
+    </div>
+  </div>
+  <div class="footer__base mono">
+    <span>© 2026 Scramble — a concept by Moryasshan</span>
+    <span>Drink water. Take the last train. 終電に気をつけて。</span>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+</body>
+</html>

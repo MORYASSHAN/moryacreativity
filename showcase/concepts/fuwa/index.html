@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FUWA ふわ — Soft friends for loud days</title>
+<meta name="description" content="FUWA is a herd of hand-finished plush companions, each with a one-of-one digital twin that wakes up when you tap its paw tag. Meet the herd, log a hug, adopt a friend.">
+<meta name="theme-color" content="#fdf3e7">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<!-- sprite of original animal characters is injected here by main.js -->
+<svg id="sprite" width="0" height="0" aria-hidden="true" style="position:absolute"></svg>
+
+<a class="back-link" href="../../../#galaxy">← Back to the galaxy</a>
+
+<header class="nav" id="nav">
+  <a class="logo" href="#top" aria-label="FUWA home">
+    <span class="logo-word">FUWA</span><span class="logo-jp">ふわ</span>
+  </a>
+  <nav class="nav-links" aria-label="Primary">
+    <a href="#herd">The herd</a>
+    <a href="#how">How it works</a>
+    <a href="#hugs">Hug-o-meter</a>
+    <a href="#faq">FAQ</a>
+  </nav>
+  <a class="pill-btn" href="#adopt">Adopt</a>
+</header>
+
+<main id="top">
+  <!-- HERO -->
+  <section class="hero" id="hero" aria-label="FUWA — fluffy animals">
+    <svg class="hero-blobs" aria-hidden="true" preserveAspectRatio="xMidYMid slice" viewBox="0 0 1440 900">
+      <defs>
+        <linearGradient id="gCoral" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffc3ae"/><stop offset="1" stop-color="#f59a85"/></linearGradient>
+        <linearGradient id="gPink" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd9df"/><stop offset="1" stop-color="#f7b3c2"/></linearGradient>
+        <linearGradient id="gButter" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff2c9"/><stop offset="1" stop-color="#ffe2a1"/></linearGradient>
+      </defs>
+      <path class="blob" data-cx="1290" data-cy="120" data-r="300" data-seed="1" fill="url(#gCoral)" opacity=".85"/>
+      <path class="blob" data-cx="120" data-cy="800" data-r="260" data-seed="2" fill="url(#gPink)" opacity=".9"/>
+      <path class="blob" data-cx="250" data-cy="170" data-r="90" data-seed="3" fill="url(#gButter)"/>
+      <path class="blob" data-cx="1010" data-cy="760" data-r="120" data-seed="4" fill="url(#gPink)" opacity=".7"/>
+      <path class="blob" data-cx="700" data-cy="460" data-r="330" data-seed="5" fill="#fff8ef" opacity=".55"/>
+    </svg>
+    <div class="sparkles" aria-hidden="true">
+      <i style="--x:14%;--y:28%;--d:0s"></i><i style="--x:82%;--y:42%;--d:1.2s"></i>
+      <i style="--x:64%;--y:16%;--d:.6s"></i><i style="--x:30%;--y:74%;--d:2s"></i>
+      <i style="--x:90%;--y:78%;--d:1.6s"></i><i style="--x:48%;--y:86%;--d:.3s"></i>
+    </div>
+
+    <div class="hero-copy" id="heroCopy">
+      <p class="eyebrow"><span class="dot"></span>Season 01 · 8 friends · now adopting</p>
+      <p class="jp-type" aria-hidden="true"><span id="typed"></span><span class="caret"></span></p>
+      <p class="jp-trans" id="typedEn" aria-hidden="true">fluffy little animals</p>
+      <h1>Soft friends for loud days.</h1>
+      <p class="hint"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 13V5.5a1.5 1.5 0 0 1 3 0V11m0-1V4.5a1.5 1.5 0 0 1 3 0V11m0-5.5a1.5 1.5 0 0 1 3 0V12m0-3.5a1.5 1.5 0 0 1 3 0V15a6 6 0 0 1-6 6h-1.5a6 6 0 0 1-4.8-2.4L4.4 14.7a1.6 1.6 0 0 1 2.5-2L8 14"/></svg>psst — they're grabbable. Fling gently.</p>
+    </div>
+
+    <div class="herd-field" id="field" aria-hidden="true"></div>
+
+    <ul class="socials" aria-label="Social links">
+      <li><a href="#" aria-label="FUWA on Instagram"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1" class="f"/></svg></a></li>
+      <li><a href="#" aria-label="FUWA on X"><svg viewBox="0 0 24 24"><path d="M5 4l14 16M19 4L5 20"/></svg></a></li>
+      <li><a href="#" aria-label="FUWA Discord"><svg viewBox="0 0 24 24"><path d="M6 6.5c2-1.3 4-1.7 6-1.7s4 .4 6 1.7c1.6 2.6 2.4 5.6 2.2 9.3-1.6 1.3-3.3 2.1-5 2.6l-1.1-1.8M6 6.5C4.4 9.1 3.6 12.1 3.8 15.8c1.6 1.3 3.3 2.1 5 2.6l1.1-1.8M7.5 15c2.9 1.4 6.1 1.4 9 0"/><circle cx="9.3" cy="11.6" r="1.2" class="f"/><circle cx="14.7" cy="11.6" r="1.2" class="f"/></svg></a></li>
+      <li><a href="#" aria-label="FUWA on YouTube"><svg viewBox="0 0 24 24"><rect x="2.8" y="5.5" width="18.4" height="13" rx="4"/><path d="M10.2 9.4v5.2l4.4-2.6z" class="f"/></svg></a></li>
+    </ul>
+
+    <a class="blob-cta" href="#herd" id="blobCta">
+      <svg viewBox="0 0 240 240" aria-hidden="true"><path id="ctaBlob" fill="#1f2f8a"/></svg>
+      <span class="blob-cta-text">view<br>collection</span>
+      <span class="blob-cta-arrow" aria-hidden="true">→</span>
+    </a>
+  </section>
+
+  <!-- MEET THE HERD -->
+  <section class="herd" id="herd">
+    <div class="sec-head">
+      <p class="kicker reveal">01 — 仲間たち</p>
+      <h2 class="reveal">Meet the herd <span class="count">(08)</span></h2>
+      <p class="sec-lede reveal">Eight original friends, each 28&nbsp;cm of recycled-bottle plush and hand-finished in Osaka. Every one has a temperament, a favourite nap spot and a digital twin that only wakes for its owner.</p>
+    </div>
+    <div class="cards" id="cards"></div>
+  </section>
+
+  <!-- HOW IT WORKS / ROADMAP -->
+  <section class="how" id="how">
+    <div class="sec-head center">
+      <p class="kicker reveal">02 — 使い方</p>
+      <h2 class="reveal">From cloud box to cosy island</h2>
+      <p class="sec-lede reveal">Follow the paw prints. A FUWA starts as something you can squeeze and grows into something you can visit.</p>
+    </div>
+    <div class="path-wrap" id="pathWrap">
+      <svg class="trail" id="trail" aria-hidden="true"><path class="trail-bg" id="trailBg"/><path class="trail-fg" id="trailPath"/></svg>
+      <div class="walker" id="walker" aria-hidden="true"><svg viewBox="0 0 200 200"><use href="#a-kinako"/></svg></div>
+
+      <ol class="steps">
+        <li class="step reveal" style="--side:right">
+          <span class="step-badge live">Live</span>
+          <span class="step-num">01</span>
+          <h3>Adopt a friend</h3>
+          <p>Choose from the herd. Your FUWA arrives napping in a recyclable cloud box with a stitched birth card and a name you can change exactly once.</p>
+        </li>
+        <li class="step reveal" style="--side:left">
+          <span class="step-badge live">Live</span>
+          <span class="step-num">02</span>
+          <h3>Tap the paw tag</h3>
+          <p>Hold your phone to the left back paw. Its digital twin blinks awake — a one-of-one collectible tied to the stitch number on the tag, owned by you, no wallet jargon required.</p>
+        </li>
+        <li class="step reveal" style="--side:right">
+          <span class="step-badge live">Live</span>
+          <span class="step-num">03</span>
+          <h3>Grow your herd</h3>
+          <p>Dress them in seasonal knits, log hugs, swap twins with friends. Twins remember every nap they've taken with you and level up their snore.</p>
+        </li>
+        <li class="step reveal" style="--side:left">
+          <span class="step-badge soon">Spring 2027</span>
+          <span class="step-num">04</span>
+          <h3>Fuwa Island</h3>
+          <p>A slow, shared island where twins visit each other's homes. Owners vote on the next three animals — the axolotl lobby is already very loud.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- HUG-O-METER -->
+  <section class="hugs" id="hugs">
+    <div class="hug-card">
+      <div class="hug-left">
+        <p class="kicker light reveal">03 — ぎゅっ</p>
+        <h2 class="reveal">The hug<h2 class="reveal">The hug-o-meter</h2>#8209;o<h2 class="reveal">The hug-o-meter</h2>#8209;meter</h2>
+        <p class="sec-lede reveal">Every squeeze logged by a paw tag lands here. It is, scientifically, the softest number on the internet.</p>
+        <div class="big-count reveal" aria-live="polite"><span id="hugCount">1,204,318</span><small>hugs logged worldwide</small></div>
+        <dl class="mini-stats">
+          <div class="reveal"><dt><span data-count="12480">0</span></dt><dd>plushies adopted</dd></div>
+          <div class="reveal"><dt><span data-count="38">0</span></dt><dd>countries napping</dd></div>
+          <div class="reveal"><dt><span data-count="0">0</span></dt><dd>batteries required</dd></div>
+        </dl>
+      </div>
+      <div class="hug-right reveal">
+        <button class="hug-btn" id="hugBtn" type="button" aria-describedby="hugMsg">
+          <svg class="ring" viewBox="0 0 220 220" aria-hidden="true">
+            <circle cx="110" cy="110" r="100" class="ring-bg"/>
+            <circle cx="110" cy="110" r="100" class="ring-fg" id="ringFg"/>
+          </svg>
+          <svg class="hug-face" viewBox="0 0 200 200" aria-hidden="true"><use href="#a-wata"/></svg>
+          <span class="sr-only">Press and hold to hug Wata</span>
+        </button>
+        <p class="hug-msg" id="hugMsg">Press &amp; hold to hug Wata</p>
+        <p class="hug-mine">Your hugs this visit: <b id="myHugs">0</b></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq" id="faq">
+    <div class="sec-head center">
+      <p class="kicker reveal">04 — よくある質問</p>
+      <h2 class="reveal">Questions, softly answered</h2>
+    </div>
+    <div class="faq-list" id="faqList">
+      <div class="qa reveal">
+        <button class="q" aria-expanded="false" aria-controls="a1" id="q1">What exactly do I get?<span class="plus" aria-hidden="true"></span></button>
+        <div class="a" id="a1" role="region" aria-labelledby="q1"><div><p>A 28&nbsp;cm hand-finished plush, its cloud box, a stitched birth card and a one-of-one digital twin that you unlock by tapping the paw tag with your phone.</p></div></div>
+      </div>
+      <div class="qa reveal">
+        <button class="q" aria-expanded="false" aria-controls="a2" id="q2">Do I need a crypto wallet?<span class="plus" aria-hidden="true"></span></button>
+        <div class="a" id="a2" role="region" aria-labelledby="q2"><div><p>Nope. Your twin lives in your FUWA account by default. If you ever want to move it somewhere else, you can — but nobody will make you learn the word "gas".</p></div></div>
+      </div>
+      <div class="qa reveal">
+        <button class="q" aria-expanded="false" aria-controls="a3" id="q3">Is the plush safe for little ones?<span class="plus" aria-hidden="true"></span></button>
+        <div class="a" id="a3" role="region" aria-labelledby="q3"><div><p>Yes — embroidered eyes, no hard parts, and a paw tag sealed inside a stitched pocket. Tested to EN71 and ASTM F963 for ages 0+.</p></div></div>
+      </div>
+      <div class="qa reveal">
+        <button class="q" aria-expanded="false" aria-controls="a4" id="q4">Can I wash my FUWA?<span class="plus" aria-hidden="true"></span></button>
+        <div class="a" id="a4" role="region" aria-labelledby="q4"><div><p>Gentle cycle, cold, inside a pillowcase. Air-dry in a sunbeam (Mikan insists). The tag survives up to 200 washes.</p></div></div>
+      </div>
+      <div class="qa reveal">
+        <button class="q" aria-expanded="false" aria-controls="a5" id="q5">What happens if I gift it?<span class="plus" aria-hidden="true"></span></button>
+        <div class="a" id="a5" role="region" aria-labelledby="q5"><div><p>The twin follows the plush. The next person to tap the tag becomes its new keeper, and the twin keeps its whole nap history — a little diary of everyone who loved it.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ADOPT / FOOTER CTA -->
+  <section class="adopt" id="adopt">
+    <div class="adopt-inner">
+      <h2 class="reveal">Season 01 adoptions open <span class="nowrap">14 November</span>.</h2>
+      <p class="sec-lede reveal">Get a soft nudge the morning the cloud boxes go live. One email, zero spam, maybe a cat photo.</p>
+      <form class="news reveal" id="newsForm" novalidate>
+        <label class="sr-only" for="email">Email address</label>
+        <input id="email" type="email" placeholder="you@cosy.place" autocomplete="email" required>
+        <button type="submit" class="pill-btn big">Notify me</button>
+        <p class="news-done" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="foot-brand">
+    <div class="foot-peek" id="peek" aria-hidden="true"></div>
+    <p class="foot-word" aria-hidden="true">FUWA<span>ふわ</span></p>
+  </div>
+  <div class="foot-row">
+    <p>© 2026 FUWA Plush Co. — a concept by Shaan.</p>
+    <nav aria-label="Footer"><a href="#herd">Herd</a><a href="#how">Roadmap</a><a href="#faq">FAQ</a><a href="#top">Back to top ↑</a></nav>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+</body>
+</html>

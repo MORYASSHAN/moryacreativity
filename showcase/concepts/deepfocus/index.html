@@ -1,0 +1,504 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEEP FOCUS — The focus app for night owls</title>
+<meta name="description" content="DEEP FOCUS is a focus timer, generative soundscape player and distraction shield for people who do their best work after dark.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='18' fill='%237a5cff'/%3E%3Cpath d='M27 10a11 11 0 1 0 3 16 9 9 0 0 1-3-16Z' fill='%23ffd400'/%3E%3C/svg%3E">
+<meta name="theme-color" content="#0b0b0f">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#features">Skip to features</a>
+
+<header class="nav">
+  <a class="logo" href="#top" aria-label="DEEP FOCUS home">
+    <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="#7a5cff"/><path d="M27 10a11 11 0 1 0 3 16 9 9 0 0 1-3-16Z" fill="#ffd400"/><circle cx="15" cy="20" r="2.4" fill="#0b0b0f"/></svg>
+    <span>DEEP<b>FOCUS</b></span>
+  </a>
+  <nav aria-label="Primary">
+    <a href="#features">Features</a>
+    <a href="#streaks">Streaks</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#download">Download</a>
+  </nav>
+  <a class="pill pill-yellow" href="#download">Get the app</a>
+</header>
+
+<main id="top">
+
+<!-- ================= HERO ================= -->
+<section class="hero" id="hero">
+  <div class="hero-copy">
+    <p class="tag"><span class="blink-dot"></span> Open after midnight</p>
+    <h1>Night shift<br>for your <span class="hl">brain.</span></h1>
+    <p class="lede">A focus timer, generative soundscapes and a distraction shield — built for people who do their real work when the house goes quiet.</p>
+
+    <div class="timer-card" id="timerCard" aria-label="Focus timer">
+      <div class="tc-top">
+        <div class="modes" role="tablist" aria-label="Timer mode">
+          <button role="tab" aria-selected="true" data-mode="focus">Focus · 25</button>
+          <button role="tab" aria-selected="false" data-mode="break" tabindex="-1">Break · 5</button>
+        </div>
+        <div class="sessions" aria-label="Sessions completed"><i></i><i></i><i></i><i></i></div>
+      </div>
+      <div class="tc-main">
+        <div class="ring">
+          <svg viewBox="0 0 120 120" aria-hidden="true">
+            <circle cx="60" cy="60" r="52" class="ring-bg"/>
+            <circle cx="60" cy="60" r="52" class="ring-fg" id="ringFg"/>
+          </svg>
+          <div class="ring-time"><span id="tTime" role="timer" aria-live="off">25:00</span><small id="tLabel">ready</small></div>
+        </div>
+        <div class="tc-ctrl">
+          <button class="pill pill-cyan btn-start" id="tStart" type="button" aria-pressed="false"><span class="ico-play" aria-hidden="true"></span><span id="tStartTxt">Start focus</span></button>
+          <button class="pill pill-ghost" id="tReset" type="button">Reset</button>
+          <div class="sound" role="group" aria-label="Ambient sound">
+            <button class="sound-toggle" id="sToggle" type="button" aria-pressed="false">
+              <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+              <span id="sTxt">Sound off</span>
+            </button>
+            <div class="sound-kind">
+              <button type="button" data-kind="rain" aria-pressed="true">Rain</button>
+              <button type="button" data-kind="brown" aria-pressed="false">Brown</button>
+            </div>
+            <label class="sr-only" for="sVol">Volume</label>
+            <input id="sVol" type="range" min="0" max="100" value="55">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- the scene: illustration + darkness + lamp light -->
+  <div class="scene-wrap" id="sceneWrap">
+    <svg class="scene" id="scene" viewBox="0 0 900 760" preserveAspectRatio="xMidYMax meet" role="img" aria-label="Illustration: a sleepy cyan creature with a glass-domed head and a glowing pink brain, wearing headphones, peeking over a laptop at night beside a desk lamp, a window and a wall clock.">
+      <defs>
+        <linearGradient id="gBody" gradientUnits="userSpaceOnUse" x1="338" y1="290" x2="562" y2="690">
+          <stop offset="0" stop-color="#3ef0e0"/><stop offset="1" stop-color="#b9ffc8"/>
+        </linearGradient>
+        <linearGradient id="gArm" gradientUnits="userSpaceOnUse" x1="300" y1="460" x2="300" y2="560">
+          <stop offset="0" stop-color="#6ff5d8"/><stop offset="1" stop-color="#a8fcc9"/>
+        </linearGradient>
+        <clipPath id="cGlass"><rect x="86" y="96" width="188" height="218" rx="8"/></clipPath>
+        <clipPath id="cEyeL"><circle cx="408" cy="378" r="30"/></clipPath>
+        <clipPath id="cEyeR"><circle cx="492" cy="378" r="30"/></clipPath>
+      </defs>
+
+      <!-- floor glow -->
+      <ellipse cx="450" cy="752" rx="420" ry="26" fill="#15151d"/>
+
+      <!-- window -->
+      <g class="window">
+        <rect x="70" y="80" width="220" height="250" rx="16" fill="#f2f2f7"/>
+        <rect x="86" y="96" width="188" height="218" rx="8" fill="#17123a"/>
+        <g clip-path="url(#cGlass)">
+          <g class="stars" fill="#fff">
+            <path class="tw" d="M120 250l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/>
+            <path class="tw t2" d="M248 286l1.5 4.5 4.5 1.5-4.5 1.5-1.5 4.5-1.5-4.5-4.5-1.5 4.5-1.5z"/>
+            <circle class="tw t3" cx="150" cy="292" r="2"/>
+            <circle class="tw" cx="260" cy="236" r="1.6"/>
+            <circle class="tw t2" cx="104" cy="226" r="1.4"/>
+          </g>
+          <circle cx="204" cy="252" r="26" fill="#ffd400"/>
+          <circle cx="216" cy="244" r="23" fill="#17123a"/>
+          <rect x="177" y="96" width="6" height="218" fill="#f2f2f7"/>
+          <g class="blinds">
+            <rect x="86" y="96" width="188" height="11" fill="#ffd400"/><rect x="86" y="107" width="188" height="3" fill="#e0b400"/>
+            <rect x="86" y="110" width="188" height="11" fill="#ffd400"/><rect x="86" y="121" width="188" height="3" fill="#e0b400"/>
+            <rect x="86" y="124" width="188" height="11" fill="#ffd400"/><rect x="86" y="135" width="188" height="3" fill="#e0b400"/>
+            <rect x="86" y="138" width="188" height="11" fill="#ffd400"/><rect x="86" y="149" width="188" height="3" fill="#e0b400"/>
+            <rect x="86" y="152" width="188" height="11" fill="#ffd400"/><rect x="86" y="163" width="188" height="3" fill="#e0b400"/>
+            <rect x="86" y="166" width="188" height="11" fill="#ffd400"/><rect x="86" y="177" width="188" height="3" fill="#e0b400"/>
+            <rect x="86" y="180" width="188" height="11" fill="#ffd400"/>
+            <rect x="80" y="190" width="200" height="10" rx="4" fill="#ffe24d"/>
+          </g>
+        </g>
+        <line x1="264" y1="96" x2="264" y2="248" stroke="#f2f2f7" stroke-width="2"/>
+        <circle cx="264" cy="252" r="5" fill="#ff6fd8"/>
+        <rect x="56" y="326" width="248" height="16" rx="6" fill="#f2f2f7"/>
+        <!-- plant -->
+        <g class="plant">
+          <g class="leaves">
+            <ellipse cx="126" cy="248" rx="9" ry="34" fill="#ff6fd8"/>
+            <ellipse cx="126" cy="252" rx="8" ry="30" fill="#ff6fd8" transform="rotate(-34 126 284)"/>
+            <ellipse cx="126" cy="252" rx="8" ry="30" fill="#ff6fd8" transform="rotate(34 126 284)"/>
+            <ellipse cx="126" cy="262" rx="7" ry="22" fill="#ff8fe2" transform="rotate(-64 126 284)"/>
+            <ellipse cx="126" cy="262" rx="7" ry="22" fill="#ff8fe2" transform="rotate(64 126 284)"/>
+            <path d="M126 284V222" stroke="#d94cb5" stroke-width="2"/>
+          </g>
+          <path d="M100 326l6-34h40l6 34z" fill="#7a5cff"/>
+          <rect x="100" y="284" width="52" height="10" rx="3" fill="#9479ff"/>
+        </g>
+      </g>
+
+      <!-- sticky notes -->
+      <g class="note" transform="rotate(5 520 120)">
+        <rect x="486" y="84" width="76" height="74" rx="4" fill="#ffd400"/>
+        <text x="496" y="112" font-family="Space Grotesk, sans-serif" font-size="13" font-weight="700" fill="#0b0b0f">deep work</text>
+        <text x="496" y="132" font-family="Space Grotesk, sans-serif" font-size="13" font-weight="500" fill="#0b0b0f">00 → 03h</text>
+        <path d="M498 142h40" stroke="#0b0b0f" stroke-width="2" stroke-linecap="round"/>
+      </g>
+      <g transform="rotate(-7 604 200)">
+        <rect x="572" y="176" width="62" height="54" rx="4" fill="#7a5cff"/>
+        <text x="582" y="200" font-family="Space Grotesk, sans-serif" font-size="11" font-weight="700" fill="#fff">no</text>
+        <text x="582" y="216" font-family="Space Grotesk, sans-serif" font-size="11" font-weight="700" fill="#fff">meetings</text>
+      </g>
+
+      <!-- clock (real time) -->
+      <g class="clock">
+        <circle cx="755" cy="150" r="74" fill="#f2f2f7"/>
+        <circle cx="755" cy="150" r="64" fill="none" stroke="#7a5cff" stroke-width="8"/>
+        <g id="clockTicks" stroke="#0b0b0f" stroke-width="3" stroke-linecap="round"></g>
+        <line id="hHour" x1="755" y1="150" x2="755" y2="116" stroke="#7a5cff" stroke-width="8" stroke-linecap="round"/>
+        <line id="hMin" x1="755" y1="150" x2="755" y2="102" stroke="#2a2340" stroke-width="5" stroke-linecap="round"/>
+        <line id="hSec" x1="755" y1="160" x2="755" y2="98" stroke="#ff6fd8" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="755" cy="150" r="6" fill="#ffd400"/>
+      </g>
+
+      <!-- character -->
+      <g class="char" id="char">
+        <path class="arm-r" d="M548 468C592 496 604 540 584 566" stroke="url(#gArm)" stroke-width="34" stroke-linecap="round" fill="none"/>
+        <path d="M338 360Q338 290 408 290H492Q562 290 562 360V596H338Z" fill="url(#gBody)"/>
+        <!-- cheeks / face -->
+        <ellipse cx="370" cy="418" rx="15" ry="8" fill="#ff6fd8" opacity=".55"/>
+        <ellipse cx="530" cy="418" rx="15" ry="8" fill="#ff6fd8" opacity=".55"/>
+        <g class="eye" id="eyeL">
+          <circle cx="408" cy="378" r="30" fill="#fff"/>
+          <g class="pupil"><circle cx="408" cy="378" r="13" fill="#0b0b0f"/><circle cx="403" cy="372" r="4" fill="#fff"/></g>
+          <g clip-path="url(#cEyeL)"><g class="lid"><rect x="374" y="300" width="68" height="78" fill="url(#gBody)"/><path d="M376 378Q408 386 440 378" stroke="#0b0b0f" stroke-width="4" fill="none" stroke-linecap="round"/></g></g>
+          <circle cx="408" cy="378" r="30" fill="none" stroke="#0b0b0f" stroke-width="3"/>
+        </g>
+        <g class="eye" id="eyeR">
+          <circle cx="492" cy="378" r="30" fill="#fff"/>
+          <g class="pupil"><circle cx="492" cy="378" r="13" fill="#0b0b0f"/><circle cx="487" cy="372" r="4" fill="#fff"/></g>
+          <g clip-path="url(#cEyeR)"><g class="lid"><rect x="458" y="300" width="68" height="78" fill="url(#gBody)"/><path d="M460 378Q492 386 524 378" stroke="#0b0b0f" stroke-width="4" fill="none" stroke-linecap="round"/></g></g>
+          <circle cx="492" cy="378" r="30" fill="none" stroke="#0b0b0f" stroke-width="3"/>
+        </g>
+        <path class="mouth" d="M438 428Q450 438 462 428" stroke="#0b0b0f" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <!-- dome rim, brain, glass -->
+        <ellipse cx="450" cy="292" rx="100" ry="14" fill="#25cdbf"/>
+        <g class="brain-wrap">
+          <g class="sparks" stroke="#ffd400" stroke-width="4" stroke-linecap="round">
+            <path d="M376 214l-14-10"/><path d="M450 186v-16"/><path d="M524 214l14-10"/><path d="M392 188l-8-12"/><path d="M508 188l8-12"/>
+          </g>
+          <g class="brain" id="brain">
+            <path d="M382 268C370 240 392 214 418 220 426 200 458 198 466 212 482 200 512 206 514 226 534 228 540 256 524 268 528 284 508 292 494 286H406C390 292 374 282 382 268Z" fill="#ff6fd8"/>
+            <g stroke="#d94cb5" stroke-width="4" stroke-linecap="round" fill="none">
+              <path d="M450 212Q444 240 452 284"/><path d="M400 248q14-10 28 0"/><path d="M408 270q12 8 26-2"/><path d="M474 236q14-10 28 2"/><path d="M478 262q12 8 26-2"/><path d="M424 228q6-8 14-4"/>
+            </g>
+            <ellipse cx="420" cy="232" rx="10" ry="5" fill="#ffb3ec" opacity=".8"/>
+          </g>
+        </g>
+        <path d="M350 292A100 100 0 0 1 550 292Z" fill="#b9ffc8" fill-opacity=".1" stroke="#ffffff" stroke-opacity=".7" stroke-width="3"/>
+        <path d="M378 254A76 76 0 0 1 420 212" stroke="#fff" stroke-opacity=".75" stroke-width="6" stroke-linecap="round" fill="none"/>
+        <!-- headphones -->
+        <path d="M330 352C318 110 582 110 570 352" stroke="#f2f2f7" stroke-width="14" fill="none" stroke-linecap="round"/>
+        <rect x="310" y="318" width="40" height="80" rx="18" fill="#ffd400"/>
+        <rect x="338" y="328" width="14" height="60" rx="7" fill="#f2f2f7"/>
+        <rect x="550" y="318" width="40" height="80" rx="18" fill="#ff6fd8"/>
+        <rect x="548" y="328" width="14" height="60" rx="7" fill="#f2f2f7"/>
+        <!-- left arm + mug -->
+        <g class="mug">
+          <g class="steam" stroke="#f2f2f7" stroke-width="4" stroke-linecap="round" fill="none" opacity=".55">
+            <path d="M250 496q-8-12 0-24t0-24"/><path d="M268 490q-8-12 0-24t0-24"/>
+          </g>
+          <path d="M232 526q-24 0-24 18t24 18" stroke="#ff6fd8" stroke-width="9" fill="none"/>
+          <rect x="230" y="506" width="64" height="66" rx="10" fill="#ff6fd8"/>
+          <circle cx="262" cy="538" r="12" fill="#ffd400"/><circle cx="268" cy="533" r="10" fill="#ff6fd8"/>
+        </g>
+        <path d="M352 470C316 488 304 516 300 532" stroke="url(#gArm)" stroke-width="34" stroke-linecap="round" fill="none"/>
+        <circle cx="298" cy="540" r="19" fill="#a8fcc9"/>
+      </g>
+
+      <!-- desk -->
+      <rect x="30" y="572" width="840" height="24" rx="10" fill="#7a5cff"/>
+      <rect x="60" y="596" width="780" height="22" fill="#5b3fe6"/>
+      <rect x="90" y="618" width="22" height="142" fill="#5b3fe6"/>
+      <rect x="788" y="618" width="22" height="142" fill="#5b3fe6"/>
+
+      <!-- laptop (lid back faces us) -->
+      <g class="laptop">
+        <rect x="364" y="438" width="276" height="132" rx="12" fill="#f2f2f7"/>
+        <path d="M424 466l-22 34h15l-9 28 28-38h-15l10-24z" fill="#ffd400"/>
+        <circle cx="502" cy="500" r="7" fill="none" stroke="#3ef0e0" stroke-width="3"/><circle cx="520" cy="500" r="7" fill="none" stroke="#3ef0e0" stroke-width="3"/>
+        <path d="M590 478a24 24 0 1 0 0 48z" fill="#ff6fd8"/>
+        <rect x="470" y="532" width="64" height="24" rx="12" fill="#b9ffc8"/>
+        <text x="502" y="549" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="13" font-weight="700" fill="#0b0b0f">zZz</text>
+        <rect x="340" y="566" width="324" height="10" rx="5" fill="#d6d6e2"/>
+      </g>
+
+      <!-- books -->
+      <g>
+        <rect x="150" y="548" width="78" height="24" rx="4" fill="#3ef0e0"/>
+        <rect x="160" y="530" width="66" height="18" rx="4" fill="#ffd400"/>
+        <rect x="156" y="516" width="70" height="14" rx="4" fill="#ff6fd8"/>
+      </g>
+
+      <!-- snail -->
+      <g class="snail" id="snail">
+        <g class="snail-in">
+          <path d="M30 572c0-18 14-24 30-24h64c10 0 16 8 16 24z" fill="#ff6fd8"/>
+          <path d="M126 552l10-26M134 556l16-22" stroke="#ff6fd8" stroke-width="5" stroke-linecap="round"/>
+          <circle cx="136" cy="524" r="5" fill="#0b0b0f"/><circle cx="150" cy="532" r="5" fill="#0b0b0f"/>
+          <circle cx="86" cy="536" r="32" fill="#c447a8"/>
+          <circle cx="86" cy="536" r="20" fill="none" stroke="#ff8fe2" stroke-width="6"/>
+          <circle cx="70" cy="520" r="5" fill="#ffd400"/><circle cx="104" cy="522" r="4" fill="#ffd400"/><circle cx="96" cy="556" r="4.5" fill="#ffd400"/><circle cx="66" cy="550" r="3.5" fill="#ffd400"/><circle cx="86" cy="536" r="4" fill="#ffd400"/>
+        </g>
+      </g>
+    </svg>
+
+    <div class="dark" id="dark" aria-hidden="true"></div>
+
+    <!-- light layer: drawn above the darkness -->
+    <svg class="glow" id="glow" viewBox="0 0 900 760" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+      <defs>
+        <linearGradient id="gCone" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#fff3a0" stop-opacity=".75"/>
+          <stop offset=".5" stop-color="#ffd400" stop-opacity=".22"/>
+          <stop offset="1" stop-color="#ffd400" stop-opacity=".05"/>
+        </linearGradient>
+        <radialGradient id="gSpot">
+          <stop offset="0" stop-color="#ffe34d" stop-opacity=".26"/>
+          <stop offset=".6" stop-color="#ffd400" stop-opacity=".08"/>
+          <stop offset="1" stop-color="#ffd400" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="gScreen" cx="50%" cy="100%" r="80%">
+          <stop offset="0" stop-color="#3ef0e0" stop-opacity=".22"/>
+          <stop offset="1" stop-color="#3ef0e0" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="gBrain">
+          <stop offset="0" stop-color="#ff6fd8" stop-opacity=".5"/>
+          <stop offset="1" stop-color="#ff6fd8" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <!-- laptop screen spill + brain glow keep the character faintly visible in the dark -->
+      <ellipse cx="450" cy="420" rx="170" ry="130" fill="url(#gScreen)"/>
+      <circle class="brain-glow" cx="450" cy="252" r="120" fill="url(#gBrain)"/>
+      <use href="#brain" opacity=".9"/>
+      <g class="beam">
+        <polygon id="cone" points="0,0 0,0 0,0 0,0" fill="url(#gCone)"/>
+        <ellipse id="spot" cx="0" cy="0" rx="150" ry="150" fill="url(#gSpot)"/>
+      </g>
+      <!-- the lamp itself -->
+      <g class="lamp">
+        <path d="M748 572q42-34 84 0z" fill="#ff6fd8"/>
+        <ellipse cx="790" cy="572" rx="46" ry="7" fill="#d94cb5"/>
+        <line x1="790" y1="552" x2="742" y2="452" stroke="#7a5cff" stroke-width="11" stroke-linecap="round"/>
+        <line x1="742" y1="452" x2="800" y2="374" stroke="#7a5cff" stroke-width="11" stroke-linecap="round"/>
+        <circle cx="742" cy="452" r="9" fill="#ffd400"/>
+        <g id="lampHead">
+          <rect x="796" y="366" width="26" height="14" rx="5" fill="#9479ff"/>
+          <path d="M818 358v30l46 20v-70z" fill="#ff6fd8"/>
+          <path d="M818 358l46-20v8l-46 18z" fill="#ff8fe2"/>
+          <ellipse cx="864" cy="373" rx="7" ry="35" fill="#fff6b8"/>
+        </g>
+        <circle cx="800" cy="374" r="8" fill="#ffd400"/>
+      </g>
+    </svg>
+
+    <p class="scene-hint" id="sceneHint" aria-hidden="true">move the lamp</p>
+  </div>
+</section>
+
+<!-- ================= MARQUEE ================= -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track">
+    <span>Rain on a tin roof</span><i>✦</i><span>Brown noise</span><i>✦</i><span>25 / 5</span><i>✦</i><span>Do not disturb, for real</span><i>✦</i><span>02:14 and in the zone</span><i>✦</i><span>Streaks that forgive one bad night</span><i>✦</i>
+    <span>Rain on a tin roof</span><i>✦</i><span>Brown noise</span><i>✦</i><span>25 / 5</span><i>✦</i><span>Do not disturb, for real</span><i>✦</i><span>02:14 and in the zone</span><i>✦</i><span>Streaks that forgive one bad night</span><i>✦</i>
+  </div>
+</div>
+
+<!-- ================= FEATURES ================= -->
+<section class="features" id="features">
+  <header class="head">
+    <p class="eyebrow">What's inside</p>
+    <h2>Four tools.<br>Zero <span class="hl-pink">noise.</span></h2>
+  </header>
+  <div class="feat-grid">
+    <article class="feat f-sound reveal">
+      <div class="feat-art" aria-hidden="true">
+        <svg viewBox="0 0 240 160">
+          <g class="cloud"><circle cx="96" cy="62" r="26" fill="#f2f2f7"/><circle cx="130" cy="52" r="32" fill="#f2f2f7"/><circle cx="160" cy="68" r="22" fill="#f2f2f7"/><rect x="74" y="62" width="104" height="28" rx="14" fill="#f2f2f7"/></g>
+          <g class="drops" stroke="#3ef0e0" stroke-width="4" stroke-linecap="round">
+            <path d="M94 102v12"/><path d="M118 98v12"/><path d="M142 104v12"/><path d="M166 98v12"/><path d="M106 120v12"/><path d="M154 120v12"/>
+          </g>
+          <g class="bars" fill="#7a5cff"><rect x="30" y="100" width="8" height="40" rx="4"/><rect x="44" y="100" width="8" height="40" rx="4"/><rect x="58" y="100" width="8" height="40" rx="4"/><rect x="190" y="100" width="8" height="40" rx="4"/><rect x="204" y="100" width="8" height="40" rx="4"/></g>
+        </svg>
+      </div>
+      <h3>Soundscapes</h3>
+      <p>Rain, brown noise, night train, distant harbour. Generated live, never looping, mixed to taste.</p>
+    </article>
+    <article class="feat f-timer reveal">
+      <div class="feat-art" aria-hidden="true">
+        <svg viewBox="0 0 240 160">
+          <circle cx="120" cy="80" r="54" fill="none" stroke="#24242e" stroke-width="12"/>
+          <circle class="sweep" cx="120" cy="80" r="54" fill="none" stroke="#ffd400" stroke-width="12" stroke-linecap="round" transform="rotate(-90 120 80)"/>
+          <text x="120" y="90" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="28" font-weight="700" fill="#f2f2f7">25:00</text>
+          <circle class="orbit" cx="120" cy="26" r="7" fill="#ff6fd8"/>
+        </svg>
+      </div>
+      <h3>Focus timer</h3>
+      <p>Pomodoro by default, flexible when you're on a roll. It notices when you're deep and quietly extends.</p>
+    </article>
+    <article class="feat f-block reveal">
+      <div class="feat-art" aria-hidden="true">
+        <svg viewBox="0 0 240 160">
+          <rect x="34" y="30" width="58" height="104" rx="12" fill="#f2f2f7"/><rect x="42" y="42" width="42" height="72" rx="4" fill="#24242e"/>
+          <g class="pings"><rect class="p1" x="44" y="50" width="38" height="12" rx="6" fill="#ff6fd8"/><rect class="p2" x="44" y="68" width="38" height="12" rx="6" fill="#ffd400"/><rect class="p3" x="44" y="86" width="38" height="12" rx="6" fill="#3ef0e0"/></g>
+          <path class="shield" d="M170 30l40 14v30c0 28-18 46-40 56-22-10-40-28-40-56V44z" fill="#7a5cff"/>
+          <path d="M156 80l10 10 20-22" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+      </div>
+      <h3>Distraction blocker</h3>
+      <p>Mutes the group chat, hides the feeds, holds your notifications at the door until the session ends.</p>
+    </article>
+    <article class="feat f-streak reveal">
+      <div class="feat-art" aria-hidden="true">
+        <svg viewBox="0 0 240 160">
+          <g class="flame"><path d="M120 22c18 22 34 36 34 60a34 34 0 0 1-68 0c0-16 8-26 16-34 0 12 6 18 12 18-4-18 0-32 6-44z" fill="#ff6fd8"/><path d="M120 66c10 10 16 18 16 28a16 16 0 0 1-32 0c0-8 6-14 10-18 0 6 4 8 6 8-2-8 0-14 0-18z" fill="#ffd400"/></g>
+          <g class="days"><circle cx="48" cy="140" r="8"/><circle cx="72" cy="140" r="8"/><circle cx="96" cy="140" r="8"/><circle cx="120" cy="140" r="8"/><circle cx="144" cy="140" r="8"/><circle cx="168" cy="140" r="8"/><circle cx="192" cy="140" r="8"/></g>
+        </svg>
+      </div>
+      <h3>Streaks</h3>
+      <p>Daily focus streaks with one forgiveness token a week — because 3 a.m. people have off nights too.</p>
+    </article>
+  </div>
+</section>
+
+<!-- ================= STREAK HEATMAP ================= -->
+<section class="streaks" id="streaks">
+  <div class="streak-head">
+    <div>
+      <p class="eyebrow">Your year, in focus</p>
+      <h2>Every square<br>is a <span class="hl-yellow">night</span> you showed up.</h2>
+    </div>
+    <dl class="streak-stats">
+      <div><dt>Current streak</dt><dd><b id="stCur">0</b> nights</dd></div>
+      <div><dt>Longest</dt><dd><b id="stLong">0</b> nights</dd></div>
+      <div><dt>Deep hours</dt><dd><b id="stHours">0</b> h</dd></div>
+    </dl>
+  </div>
+  <div class="heat-card reveal">
+    <div class="heat-scroll">
+      <div class="heat-months" id="heatMonths" aria-hidden="true"></div>
+      <div class="heat-body">
+        <div class="heat-days" aria-hidden="true"><span>Mon</span><span>Wed</span><span>Fri</span></div>
+        <div class="heat" id="heat" role="img" aria-label="Focus heatmap for the past year"></div>
+      </div>
+    </div>
+    <div class="heat-foot">
+      <p class="heat-tip" id="heatTip" aria-live="polite">Hover a night to see what you did with it.</p>
+      <div class="legend" aria-hidden="true"><span>less</span><i class="l0"></i><i class="l1"></i><i class="l2"></i><i class="l3"></i><i class="l4"></i><span>more</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PRICING ================= -->
+<section class="pricing" id="pricing">
+  <header class="head head-center">
+    <p class="eyebrow">Pricing</p>
+    <h2>Cheaper than<br>a 2 a.m. espresso.</h2>
+    <div class="billing" role="group" aria-label="Billing period">
+      <button type="button" data-bill="month" aria-pressed="false">Monthly</button>
+      <button type="button" data-bill="year" aria-pressed="true">Yearly <em>−25%</em></button>
+    </div>
+  </header>
+  <div class="plans">
+    <article class="plan reveal">
+      <h3>Free</h3>
+      <p class="price"><b>€0</b><span>forever</span></p>
+      <p class="plan-sub">Everything you need for a good night.</p>
+      <ul>
+        <li>Focus timer &amp; breaks</li>
+        <li>3 soundscapes</li>
+        <li>Streaks — last 30 nights</li>
+        <li>Blocker on one device</li>
+      </ul>
+      <a class="pill pill-ghost pill-block" href="#download">Download free</a>
+    </article>
+    <article class="plan plan-pro reveal">
+      <span class="badge">Night owl favourite</span>
+      <h3>Pro</h3>
+      <p class="price"><b id="proPrice">€3</b><span id="proPer">/ month, billed yearly</span></p>
+      <p class="plan-sub">For people who ship after midnight.</p>
+      <ul>
+        <li>All 24 soundscapes + layer mixer</li>
+        <li>Blocker across every device</li>
+        <li>Full streak history &amp; insights</li>
+        <li>Focus rooms with friends</li>
+        <li>Sunrise alarm when you overdo it</li>
+      </ul>
+      <a class="pill pill-yellow pill-block" href="#download">Start 14-day trial</a>
+    </article>
+  </div>
+</section>
+
+<!-- ================= TESTIMONIALS ================= -->
+<section class="quotes" aria-labelledby="quotesTitle">
+  <header class="head">
+    <p class="eyebrow">Heard at 3 a.m.</p>
+    <h2 id="quotesTitle">Owls,<br>reviewed.</h2>
+  </header>
+  <div class="q-rows">
+    <div class="q-row" id="qRow1"></div>
+    <div class="q-row q-rev" id="qRow2"></div>
+  </div>
+</section>
+
+<!-- ================= DOWNLOAD ================= -->
+<section class="download" id="download">
+  <div class="dl-inner reveal">
+    <svg class="dl-moon" viewBox="0 0 200 200" aria-hidden="true">
+      <circle cx="100" cy="100" r="80" fill="#ffd400"/><circle cx="130" cy="78" r="70" fill="#0b0b0f"/>
+      <circle class="tw" cx="40" cy="30" r="3" fill="#fff"/><circle class="tw t2" cx="170" cy="160" r="2.5" fill="#fff"/><circle class="tw t3" cx="178" cy="40" r="2" fill="#fff"/>
+    </svg>
+    <svg class="dl-peek" viewBox="320 170 260 250" aria-hidden="true"><use href="#char"/></svg>
+    <h2>Your best work<br>happens <span class="hl">after midnight.</span></h2>
+    <p>Free on macOS, Windows and iPhone. Your brain will thank you around 2 a.m.</p>
+    <div class="dl-btns">
+      <a class="store" href="#download" data-demo>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 20h8M12 16v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <span><small>Download for</small>macOS &amp; Windows</span>
+      </a>
+      <a class="store" href="#download" data-demo>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="18" r="1.2" fill="currentColor"/></svg>
+        <span><small>Get it for</small>iPhone</span>
+      </a>
+    </div>
+    <form class="wait" id="waitForm" novalidate>
+      <label for="waitEmail">Android is on the way — get a ping when it lands.</label>
+      <div class="wait-row">
+        <input id="waitEmail" type="email" placeholder="you@nightowl.dev" autocomplete="email" required>
+        <button class="pill pill-cyan" type="submit">Notify me</button>
+      </div>
+      <p class="wait-done" id="waitDone" hidden>You're on the list. We'll whisper, promise.</p>
+    </form>
+    <p class="dl-demo" id="dlDemo" aria-live="polite"></p>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="foot-top">
+    <p class="foot-word">DEEP<span>FOCUS</span></p>
+    <p class="foot-clock">Made for night owls · it's <b id="footTime">--:--</b> where you are</p>
+  </div>
+  <div class="foot-cols">
+    <div><h4>Product</h4><a href="#features">Features</a><a href="#pricing">Pricing</a><a href="#download">Download</a></div>
+    <div><h4>Owls</h4><a href="#streaks">Streaks</a><a href="#top">Focus rooms</a><a href="#top">Changelog</a></div>
+    <div><h4>Company</h4><a href="#top">Manifesto</a><a href="#top">Press kit</a><a href="#top">Privacy</a></div>
+  </div>
+  <p class="foot-small">© 2026 DEEP FOCUS — a concept by Moryasshan. Illustration drawn in SVG; sounds generated live with the Web Audio API.</p>
+</footer>
+
+<a class="back-link" href="../../../#galaxy">← Back to the galaxy</a>
+
+<script src="main.js"></script>
+</body>
+</html>

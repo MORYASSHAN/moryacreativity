@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ALTITUDE — Guided Ski-Touring &amp; Alpine Expeditions, Swiss Alps</title>
+<meta name="description" content="ALTITUDE leads small-group ski-touring and mountaineering expeditions across the Valais Alps — from the Haute Route to the Hörnli Ridge of the Matterhorn — with IFMGA-certified guides.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230d2a4a'/%3E%3Cpath d='M4 25 13 9l5 7 3-4 7 13Z' fill='%23f4f7fb'/%3E%3Cpath d='m13 9 3 4.5-3 1.5-2-1.5' fill='%23ff6a2b'/%3E%3C/svg%3E">
+<meta name="theme-color" content="#0d2a4a">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="sky.webp">
+<link rel="preload" as="image" href="ridge.webp">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<a class="skip" href="#expeditions">Skip to expeditions</a>
+
+<!-- ============ NAV ============ -->
+<header class="nav" id="nav">
+  <a class="brand" href="#top" aria-label="ALTITUDE home">
+    <svg viewBox="0 0 32 20" aria-hidden="true"><path d="M1 19 11 4l5 7 4-5 11 13Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="m11 4 3 4.5-3 1.5-2-1.5" fill="currentColor"/></svg>
+    <span>ALTITUDE</span>
+  </a>
+  <nav aria-label="Primary">
+    <a href="#expeditions">Expeditions</a>
+    <a href="#gear">Gear list</a>
+    <a href="#guides">Guides</a>
+    <a href="#book">Season 2027</a>
+  </nav>
+  <a class="btn btn-sm btn-orange" href="#book">Book a place</a>
+</header>
+
+<main id="top">
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="hero" aria-label="Introduction">
+  <div class="layer layer-sky" data-depth="sky"><img src="sky.webp" alt="" width="1330" height="749"></div>
+  <h1 class="layer-title" id="heroTitle" aria-label="ALTITUDE — guided alpine expeditions in the Swiss Alps"><span class="t-line" aria-hidden="true">ALTI</span><span class="t-line" aria-hidden="true">TUDE</span></h1>
+  <div class="layer layer-ridge" data-depth="ridge"><img src="ridge.webp" alt="A jagged, snow-covered Alpine ridge under a clear blue sky" width="1330" height="749"></div>
+  <canvas class="snow" id="snow" aria-hidden="true"></canvas>
+  <div class="hero-shade" aria-hidden="true"></div>
+
+  <div class="hero-meta hero-meta-tl" aria-hidden="true">
+    <span>46°00′N</span><span>07°45′E</span>
+  </div>
+
+  <div class="hero-bottom">
+    <div class="hero-copy">
+      <p class="eyebrow"><span class="dot"></span> Valais · Switzerland — Season 2027 now open</p>
+      <p class="hero-lede">Small-group ski-touring and mountaineering, led by IFMGA guides who were born under these peaks. Six climbers per rope team, never more.</p>
+      <div class="hero-cta">
+        <a class="btn btn-orange" href="#expeditions">Explore the routes <span aria-hidden="true">→</span></a>
+        <a class="btn btn-ghost" href="#book">Season dates</a>
+      </div>
+    </div>
+    <ul class="hero-stats" aria-label="At a glance">
+      <li><b>38</b><span>4000 m summits guided</span></li>
+      <li><b>1:3</b><span>Guide-to-climber ratio on glaciers</span></li>
+      <li><b>0</b><span>Shortcuts on safety</span></li>
+    </ul>
+  </div>
+  <a class="scroll-cue" href="#manifesto" aria-label="Scroll to begin the ascent"><span></span>Begin ascent</a>
+</section>
+
+<!-- ============ MANIFESTO ============ -->
+<section class="manifesto" id="manifesto">
+  <div class="wrap grid">
+    <p class="kicker"><span>00</span> The approach</p>
+    <p class="statement reveal-words">We don't sell summits. We teach you to read a mountain — the wind-slab on a north face, the hour the couloir softens, the moment to turn around — and then we go higher than you thought you could.</p>
+    <dl class="facts">
+      <div><dt>Founded</dt><dd>Zermatt, 2009</dd></div>
+      <div><dt>Guides</dt><dd>14 IFMGA / UIAGM</dd></div>
+      <div><dt>Avalanche training</dt><dd>SLF Level 2, every guide</dd></div>
+      <div><dt>Returned home</dt><dd>Every climber. Every time.</dd></div>
+    </dl>
+  </div>
+</section>
+
+<!-- ============ EXPEDITIONS ============ -->
+<section class="expeditions" id="expeditions">
+  <div class="wrap">
+    <header class="sec-head">
+      <p class="kicker"><span>01</span> Expeditions</p>
+      <h2 class="sec-title">Three lines.<br><em>One</em> range.</h2>
+      <p class="sec-intro">Each route is drawn from the GPS tracks of last season. Hover the profile to read the mountain metre by metre.</p>
+    </header>
+
+    <div class="routes" role="tablist" aria-label="Choose a route">
+      <button class="route-tab" role="tab" aria-selected="true" aria-controls="routePanel" data-route="0">
+        <span class="rt-num">A</span><span class="rt-name">The Haute Route</span><span class="rt-type">Ski-touring · 7 days</span>
+      </button>
+      <button class="route-tab" role="tab" aria-selected="false" aria-controls="routePanel" data-route="1" tabindex="-1">
+        <span class="rt-num">B</span><span class="rt-name">Monte Rosa 4000s</span><span class="rt-type">Mountaineering · 5 days</span>
+      </button>
+      <button class="route-tab" role="tab" aria-selected="false" aria-controls="routePanel" data-route="2" tabindex="-1">
+        <span class="rt-num">C</span><span class="rt-name">Matterhorn, Hörnli Ridge</span><span class="rt-type">Alpine rock · 4 days</span>
+      </button>
+    </div>
+
+    <div class="route-panel" id="routePanel" role="tabpanel">
+      <div class="route-info">
+        <p class="route-path" id="rPath">Chamonix → Zermatt</p>
+        <h3 class="route-title" id="rTitle">The Haute Route</h3>
+        <p class="route-desc" id="rDesc"></p>
+        <dl class="route-specs">
+          <div><dt>Distance</dt><dd id="rDist">—</dd></div>
+          <div><dt>Total ascent</dt><dd id="rAsc">—</dd></div>
+          <div><dt>High point</dt><dd id="rHigh">—</dd></div>
+          <div><dt>Grade</dt><dd id="rGrade">—</dd></div>
+        </dl>
+        <div class="route-price"><span id="rPrice">CHF 3,950</span><small>per climber, huts &amp; half-board included</small></div>
+      </div>
+
+      <figure class="profile" id="profile">
+        <div class="profile-readout" aria-live="polite">
+          <span class="pr-alt" id="prAlt">—</span>
+          <span class="pr-km" id="prKm">Hover the profile</span>
+          <span class="pr-wp" id="prWp"></span>
+        </div>
+        <svg id="profileSvg" viewBox="0 0 1000 360" preserveAspectRatio="none" tabindex="0" role="img" aria-label="Elevation profile. Use the left and right arrow keys to move along the route.">
+          <defs>
+            <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#9fd3ff" stop-opacity=".55"/>
+              <stop offset="1" stop-color="#9fd3ff" stop-opacity="0"/>
+            </linearGradient>
+            <pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+              <line x1="0" y1="0" x2="0" y2="6" stroke="#0d2a4a" stroke-opacity=".07" stroke-width="2"/>
+            </pattern>
+          </defs>
+          <g id="pGrid"></g>
+          <path id="pArea" fill="url(#areaGrad)"/>
+          <path id="pHatch" fill="url(#hatch)"/>
+          <path id="pLine" fill="none" stroke="#0d2a4a" stroke-width="2.2" vector-effect="non-scaling-stroke" stroke-linejoin="round"/>
+          <g id="pWps"></g>
+          <g id="pMarker" class="p-marker">
+            <line id="pmLine" y1="0" y2="360" stroke="#ff6a2b" stroke-width="1" vector-effect="non-scaling-stroke"/>
+          </g>
+        </svg>
+        <span class="pm-dot" id="pmDot" aria-hidden="true"></span>
+        <div class="profile-axis" id="pAxis" aria-hidden="true"></div>
+        <figcaption class="sr-only" id="pCaption"></figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============ GEAR ============ -->
+<section class="gear" id="gear">
+  <div class="wrap">
+    <header class="sec-head sec-head-dark">
+      <p class="kicker"><span>02</span> The gear list</p>
+      <h2 class="sec-title">Pack it like<br>your guide does.</h2>
+      <p class="sec-intro">Everything we'll check at the trailhead in Zermatt. Tick items off as you pack — we'll keep count of the weight on your back.</p>
+    </header>
+
+    <div class="gear-wrap">
+      <aside class="pack" aria-live="polite">
+        <div class="pack-ring">
+          <svg viewBox="0 0 120 120" aria-hidden="true">
+            <circle cx="60" cy="60" r="52" class="ring-bg"/>
+            <circle cx="60" cy="60" r="52" class="ring-fg" id="ringFg"/>
+          </svg>
+          <div class="pack-center"><b id="packPct">0%</b><span>packed</span></div>
+        </div>
+        <dl class="pack-stats">
+          <div><dt>Pack weight</dt><dd id="packKg">0.0 kg</dd></div>
+          <div><dt>Items</dt><dd id="packCount">0 / 0</dd></div>
+          <div><dt>Essentials</dt><dd id="packEss">0 missing</dd></div>
+        </dl>
+        <p class="pack-msg" id="packMsg">Start with the avalanche kit. It's not optional.</p>
+        <div class="pack-actions">
+          <button class="btn btn-sm btn-ice" id="packAll" type="button">Tick essentials</button>
+          <button class="btn btn-sm btn-line" id="packReset" type="button">Reset</button>
+        </div>
+      </aside>
+      <div class="gear-cols" id="gearCols"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ GUIDES ============ -->
+<section class="guides" id="guides">
+  <div class="wrap">
+    <header class="sec-head">
+      <p class="kicker"><span>03</span> Guides</p>
+      <h2 class="sec-title">Born at<br>1,608 metres.</h2>
+      <p class="sec-intro">Our guides grew up in Zermatt, Saas-Fee and Courmayeur. Each map below is drawn from the contours of their home mountain.</p>
+    </header>
+    <div class="guide-grid" id="guideGrid"></div>
+  </div>
+</section>
+
+<!-- ============ QUOTE ============ -->
+<section class="quote">
+  <div class="wrap">
+    <blockquote class="reveal-up">
+      <p>At 4,200 metres on the Shoulder, Anouk stopped, made us drink, and pointed at the shadow of the Matterhorn lying across Italy. I've thought about that minute every day since.</p>
+      <footer>— Hanna W., Hörnli Ridge, August 2026</footer>
+    </blockquote>
+  </div>
+</section>
+
+<!-- ============ BOOK ============ -->
+<section class="book" id="book">
+  <div class="wrap">
+    <header class="sec-head sec-head-dark">
+      <p class="kicker"><span>04</span> Season 2027</p>
+      <h2 class="sec-title">Two windows.<br>Limited ropes.</h2>
+    </header>
+
+    <div class="season" aria-label="Season calendar 2027">
+      <div class="season-months" aria-hidden="true">
+        <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span>
+      </div>
+      <div class="season-track">
+        <div class="season-bar ski" style="--s:2.03;--e:4.6">
+          <b>Ski-&shy;touring</b><span>2 Mar – 18 May</span>
+        </div>
+        <div class="season-bar alp" style="--s:5.9;--e:8.45">
+          <b>Mountain&shy;eering</b><span>28 Jun – 14 Sep</span>
+        </div>
+        <i class="season-now" style="--m:1" aria-hidden="true"></i>
+      </div>
+    </div>
+
+    <div class="book-grid">
+      <div class="book-copy">
+        <p class="book-big">142 <small>places left across 23 departures</small></p>
+        <ul class="book-list">
+          <li><span>Deposit</span> CHF 500, refundable to 60 days</li>
+          <li><span>Included</span> Guides, huts, half-board, lift passes, rescue insurance</li>
+          <li><span>Rentals</span> Skis, skins, crampons, harness, avalanche kit</li>
+        </ul>
+      </div>
+      <form class="book-form" id="bookForm" novalidate>
+        <div class="bf-row">
+          <label for="bfRoute">Route</label>
+          <select id="bfRoute" name="route">
+            <option>The Haute Route — ski-touring</option>
+            <option>Monte Rosa 4000s — mountaineering</option>
+            <option>Matterhorn, Hörnli Ridge</option>
+          </select>
+        </div>
+        <div class="bf-row bf-split">
+          <div>
+            <label for="bfMonth">Departure</label>
+            <select id="bfMonth" name="month">
+              <option>March 2027</option><option>April 2027</option><option>May 2027</option>
+              <option>July 2027</option><option selected>August 2027</option><option>September 2027</option>
+            </select>
+          </div>
+          <div>
+            <span class="lbl" id="bfPartyLbl">Climbers</span>
+            <div class="stepper" role="group" aria-labelledby="bfPartyLbl">
+              <button type="button" data-step="-1" aria-label="Fewer climbers">−</button>
+              <output id="bfParty" aria-live="polite">2</output>
+              <button type="button" data-step="1" aria-label="More climbers">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="bf-row">
+          <label for="bfEmail">Email</label>
+          <input id="bfEmail" type="email" name="email" placeholder="you@summit.ch" autocomplete="email" required>
+        </div>
+        <button class="btn btn-orange btn-block" type="submit">Request a place <span aria-hidden="true">→</span></button>
+        <p class="bf-note">Demo form — nothing is sent.</p>
+        <div class="bf-done" id="bfDone" hidden>
+          <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M4 42 20 14l8 12 6-8 10 24Z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/></svg>
+          <p><b>Rope reserved.</b> A guide will call you within 48 hours to talk through your experience and the plan.</p>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="foot-ridge" aria-hidden="true"></div>
+  <div class="wrap foot-inner">
+    <p class="foot-word" aria-hidden="true">ALTITUDE</p>
+    <div class="foot-cols">
+      <div><h4>Base</h4><p>Bahnhofstrasse 42<br>3920 Zermatt, Valais</p></div>
+      <div><h4>Contact</h4><p>+41 27 000 44 78<br>rope@altitude.example</p></div>
+      <div><h4>Conditions</h4><p>Freezing level 3,450 m<br>Avalanche danger 2 — moderate</p></div>
+      <div><h4>Newsletter</h4>
+        <form class="foot-news" id="newsForm"><label class="sr-only" for="newsEmail">Email</label><input id="newsEmail" type="email" placeholder="Season updates" required><button type="submit" aria-label="Subscribe">→</button></form>
+        <p class="news-done" id="newsDone" hidden>You're on the list. See you at the hut.</p>
+      </div>
+    </div>
+    <p class="foot-small"><span>© 2027 ALTITUDE Bergführer AG — a concept by Moryasshan.</span><span>Photo: Bernese Oberland, winter.</span></p>
+  </div>
+</footer>
+
+<!-- altitude meter -->
+<aside class="meter" id="meter" aria-label="Altitude meter">
+  <div class="meter-scale" aria-hidden="true"><i id="meterFill"></i></div>
+  <div class="meter-body">
+    <span class="meter-lbl">ALT</span>
+    <b class="meter-val"><span id="meterVal">1,050</span><small>m</small></b>
+    <span class="meter-zone" id="meterZone">Valley floor</span>
+    <span class="meter-sub"><span id="meterTemp">12.0</span>°C · O₂ <span id="meterO2">89</span>%</span>
+  </div>
+</aside>
+
+<a class="back-link" href="../../../#galaxy">← Back to the galaxy</a>
+
+<script src="ridge.js"></script>
+<script src="main.js"></script>
+</body>
+</html>

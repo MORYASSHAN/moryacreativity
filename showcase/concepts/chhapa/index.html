@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CHHAPA छापा — Hand-block printed textiles from Bagru</title>
+<meta name="description" content="CHHAPA is a hand-block printing atelier: carved sheesham blocks, vegetable dyes and river-washed cotton. Print your own cloth, meet the blocks and shop dupattas, quilts and table runners.">
+<meta name="theme-color" content="#4a0a1c">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@500;600;700&family=Rozha+One&family=Tiro+Devanagari+Hindi:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<!-- shared wood defs for every carved block on the page -->
+<svg class="defs" width="0" height="0" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="woodGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#b98252"/>
+      <stop offset=".45" stop-color="#9a6538"/>
+      <stop offset="1" stop-color="#7a4a26"/>
+    </linearGradient>
+    <linearGradient id="woodSide" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5a3317"/>
+      <stop offset="1" stop-color="#2e170a"/>
+    </linearGradient>
+    <filter id="woodGrain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.012 0.34" numOctaves="3" seed="8" result="t"/>
+      <feColorMatrix in="t" type="matrix" values="0 0 0 0 .22  0 0 0 0 .11  0 0 0 0 .04  0 0 0 1.6 -.55"/>
+      <feComposite in2="SourceGraphic" operator="in"/>
+    </filter>
+    <radialGradient id="potGlaze" cx=".35" cy=".3" r=".8">
+      <stop offset="0" stop-color="#c77a4a"/>
+      <stop offset=".6" stop-color="#8a3f1e"/>
+      <stop offset="1" stop-color="#4d1e0b"/>
+    </radialGradient>
+  </defs>
+</svg>
+
+<a class="back" href="../../../#galaxy">← Back to the galaxy</a>
+
+<header class="nav">
+  <a href="#top" class="logo" aria-label="Chhapa home"><span class="logo-dev" lang="hi">छापा</span><span class="logo-lat">CHHAPA</span></a>
+  <nav aria-label="Primary">
+    <a href="#craft">The craft</a>
+    <a href="#blocks">Blocks</a>
+    <a href="#shop">Shop</a>
+    <a href="#story">Our story</a>
+  </nav>
+  <a class="bag" href="#shop" aria-label="Bag, 0 items"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l-1.2 12H6.2L5 8z M9 8V6a3 3 0 0 1 6 0v2"/></svg><span id="bagCount">0</span></a>
+</header>
+
+<main id="top">
+  <!-- HERO: the printing table -->
+  <section class="hero" id="hero" aria-label="Print your own cloth">
+    <canvas id="cloth" tabindex="0" aria-label="Cotton cloth. Click or press Enter to stamp the carved block; arrow keys move the block." role="application"></canvas>
+    <div class="block-cursor" id="blockCursor" aria-hidden="true"><div class="block-shadow"></div><div class="block-art"></div></div>
+
+    <article class="tag" id="tag">
+      <span class="tag-hole" aria-hidden="true"></span>
+      <p class="tag-kicker">Hand-block printing atelier · Bagru, Rajasthan</p>
+      <h1><span class="h-dev" lang="hi">छापा</span><span class="h-lat">Printed by hand.<br>Never twice the same.</span></h1>
+      <p class="tag-body">Carved sheesham blocks, vegetable dyes, river water and a steady hand. Pick a block, dip it in a pot, and press it onto the cloth.</p>
+      <div class="tag-ctas">
+        <a class="btn" href="#shop">Shop the cloth</a>
+        <a class="link" href="#craft">How it's made →</a>
+      </div>
+      <p class="tag-count"><span lang="hi">छाप</span> <b id="impressions">0</b> impressions on this cloth</p>
+    </article>
+
+    <div class="bench" role="toolbar" aria-label="Printing tools">
+      <div class="bench-group" role="radiogroup" aria-label="Carved block" id="blockPicker"></div>
+      <span class="bench-sep" aria-hidden="true"></span>
+      <div class="bench-group pots" role="radiogroup" aria-label="Dye pot" id="potPicker"></div>
+      <span class="bench-sep" aria-hidden="true"></span>
+      <div class="bench-group actions">
+        <button type="button" class="act" id="repeatBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h11l-3-3M20 17H9l3 3"/></svg><span>Repeat print</span></button>
+        <button type="button" class="act ghost" id="washBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 15c3 0 3-2 6-2s3 2 6 2 3-2 6-2M3 19c3 0 3-2 6-2s3 2 6 2 3-2 6-2M12 3c2 3 3 4.5 3 6a3 3 0 0 1-6 0c0-1.5 1-3 3-6z"/></svg><span>Wash</span></button>
+      </div>
+    </div>
+    <p class="hint" aria-hidden="true">click the cloth to print — <span lang="hi">छापो</span></p>
+  </section>
+
+  <!-- THE CRAFT: pinned horizontal -->
+  <section class="craft" id="craft" aria-label="The craft, in four steps">
+    <div class="craft-pin">
+      <header class="craft-head">
+        <p class="eyebrow">The craft · <span lang="hi">कारीगरी</span></p>
+        <div class="craft-progress" aria-hidden="true"><span id="craftBar"></span></div>
+        <p class="craft-step" aria-hidden="true"><b id="craftNum">१</b> / ४</p>
+      </header>
+      <div class="craft-track" id="craftTrack">
+        <article class="panel">
+          <div class="panel-art" data-art="carve"></div>
+          <div class="panel-copy">
+            <p class="pnum" lang="hi">१</p>
+            <h2>Carve <span lang="hi">खुदाई</span></h2>
+            <p>Every block begins as a seasoned slab of sheesham. The carver draws the motif in chalk and cuts it with fifty-odd chisels — a single paisley can take four days. Each colour needs its own block: an outline, the <em>rekh</em>, then its fills, the <em>datta</em>.</p>
+            <p class="meta">4 days · 52 chisels · 1 slab of sheesham</p>
+          </div>
+        </article>
+        <article class="panel">
+          <div class="panel-art" data-art="dye"></div>
+          <div class="panel-copy">
+            <p class="pnum" lang="hi">२</p>
+            <h2>Dye <span lang="hi">रंगाई</span></h2>
+            <p>Our colours are boiled, not bought: madder root for red, indigo vats for blue, pomegranate rind and turmeric for yellow, iron and jaggery for black. <em>Dabu</em> — a resist of black clay, gum and wheat — keeps the cloth pale where colour must not go.</p>
+            <p class="meta">Madder · Indigo · Pomegranate · Iron</p>
+          </div>
+        </article>
+        <article class="panel">
+          <div class="panel-art" data-art="stamp"></div>
+          <div class="panel-copy">
+            <p class="pnum" lang="hi">३</p>
+            <h2>Stamp <span lang="hi">छपाई</span></h2>
+            <p>The printer dips the block in a tray of dye-soaked felt, sets it on the cloth by eye and strikes it once with the heel of the hand. Registration is done by feel — about four hundred impressions an hour, each one a little different.</p>
+            <p class="meta">400 impressions / hour · 0 rulers</p>
+          </div>
+        </article>
+        <article class="panel">
+          <div class="panel-art" data-art="wash"></div>
+          <div class="panel-copy">
+            <p class="pnum" lang="hi">४</p>
+            <h2>Wash <span lang="hi">धुलाई</span></h2>
+            <p>Prints are sun-dried, steamed, then washed in running water to lift the excess dye and clay. The cloth goes in muddy and comes out singing — and it softens with every wash after, yours included.</p>
+            <p class="meta">3 days in the sun · 1 river</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- BLOCKS -->
+  <section class="blocks" id="blocks">
+    <header class="sec-head rv">
+      <p class="eyebrow">The block library · <span lang="hi">ठप्पे</span></p>
+      <h2>Thirty-eight blocks.<br><em>Six you can meet today.</em></h2>
+      <p>Turn a block over to see what it leaves behind. Most of ours are older than the people who print with them.</p>
+    </header>
+    <div class="block-grid" id="blockGrid"></div>
+  </section>
+
+  <!-- SHOP -->
+  <section class="shop" id="shop">
+    <header class="sec-head rv">
+      <p class="eyebrow">From the table · <span lang="hi">दुकान</span></p>
+      <h2>Cloth for keeping.</h2>
+      <p>Small runs, printed to order on handloom cotton. Colours shift a little between batches — the dye pots have moods.</p>
+    </header>
+    <div class="products">
+      <article class="product rv">
+        <div class="p-art" data-product="dupatta"></div>
+        <div class="p-info">
+          <h3>Kairi Dupatta</h3>
+          <p>Mulmul cotton, 2.5 m, madder &amp; cream paisley on maroon, tasselled ends.</p>
+          <div class="p-buy"><span class="price">₹2,850</span><button type="button" class="add">Add to bag</button></div>
+        </div>
+      </article>
+      <article class="product rv">
+        <div class="p-art" data-product="quilt"></div>
+        <div class="p-info">
+          <h3>Phool Razai</h3>
+          <p>Jaipuri quilt, 90 × 100 in, hand-carded cotton fill, reversible sanganeri print.</p>
+          <div class="p-buy"><span class="price">₹7,400</span><button type="button" class="add">Add to bag</button></div>
+        </div>
+      </article>
+      <article class="product rv">
+        <div class="p-art" data-product="runner"></div>
+        <div class="p-info">
+          <h3>Bel Table Runner</h3>
+          <p>14 × 72 in, dabu-resist vine in indigo &amp; green, finished with a hand-rolled hem.</p>
+          <div class="p-buy"><span class="price">₹1,650</span><button type="button" class="add">Add to bag</button></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- STORY -->
+  <section class="story" id="story">
+    <div class="story-art" aria-hidden="true"><div class="mandala" id="mandala"></div></div>
+    <div class="story-copy">
+      <p class="eyebrow rv">The printer · <span lang="hi">छीपा</span></p>
+      <blockquote class="rv">
+        <p>“The block remembers every hand that has held it. The cloth only remembers mine for a morning.”</p>
+        <footer>Kailash-ji, master printer — fourth generation of a printing family in Bagru</footer>
+      </blockquote>
+      <p class="story-body rv">Kailash learnt to print at nine, on the back verandah, from a grandfather who never once measured a repeat. Today he runs CHHAPA's table with twenty-three printers and nine carvers. They are paid by the month, not the metre — because a printer who is hurried makes a cloth that looks hurried.</p>
+      <dl class="facts rv">
+        <div><dt>Generations</dt><dd lang="hi">४</dd></div>
+        <div><dt>Blocks in the archive</dt><dd>1,200</dd></div>
+        <div><dt>Printers &amp; carvers</dt><dd>32</dd></div>
+      </dl>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="border-band" aria-hidden="true"></div>
+  <div class="foot-inner">
+    <div class="foot-brand">
+      <p class="foot-dev" lang="hi">छापा</p>
+      <p>Hand-block printed in Bagru, Rajasthan.<br>Cloth that remembers the hand.</p>
+    </div>
+    <div class="foot-col">
+      <h4>Visit</h4>
+      <p>The printing table is open to visitors on Saturdays, 8 am – noon, when the light is best.</p>
+    </div>
+    <div class="foot-col">
+      <h4>Letters from the dye-house</h4>
+      <form class="news" id="news"><label class="sr" for="em">Email address</label><input id="em" type="email" placeholder="your@email.com" required><button type="submit">Subscribe</button></form>
+      <p class="news-ok" hidden>Shukriya — the first letter comes with the next indigo batch.</p>
+    </div>
+  </div>
+  <p class="legal">A concept by Moryasshan. CHHAPA is a fictional atelier; all motifs are drawn for this page.</p>
+</footer>
+
+<script src="main.js"></script>
+</body>
+</html>

@@ -1,0 +1,226 @@
+:root {
+  --bg: #050506;
+  --ink: #f2efe9;
+  --muted: rgba(242, 239, 233, 0.6);
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --display: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--mono);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  overscroll-behavior-y: none;
+}
+
+/* the 3D stage is pinned; the page scrolls underneath it */
+.stage {
+  position: fixed !important;
+  inset: 0;
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100lvh !important;
+  pointer-events: none;
+}
+
+#dive {
+  height: 1125vh;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ---------- loader / fade in ---------- */
+.loader {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: var(--bg);
+  transition: opacity 1.4s cubic-bezier(0.4, 0, 0.2, 1) 0.15s, visibility 0s linear 1.6s;
+}
+.loader.is-done {
+  opacity: 0;
+  visibility: hidden;
+}
+.loader-bar {
+  width: min(160px, 40vw);
+  height: 1px;
+  background: rgba(242, 239, 233, 0.12);
+  overflow: hidden;
+}
+.loader-bar > span {
+  display: block;
+  height: 100%;
+  background: var(--ink);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+/* ---------- scroll cue ---------- */
+.scroll-cue {
+  position: absolute;
+  left: 50%;
+  bottom: max(18px, env(safe-area-inset-bottom));
+  transform: translate(-50%, 8px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.7);
+  opacity: 0;
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.scroll-cue.is-on {
+  opacity: 0.85;
+  transform: translate(-50%, 0);
+  transition-delay: 1.8s;
+}
+.scroll-cue i {
+  width: 1px;
+  height: 28px;
+  background: linear-gradient(var(--ink), transparent);
+  transform-origin: top;
+  animation: cue 1.8s cubic-bezier(0.6, 0, 0.3, 1) infinite;
+}
+@keyframes cue {
+  0% {
+    transform: scaleY(0);
+    opacity: 1;
+  }
+  60% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scaleY(1);
+    opacity: 0;
+  }
+}
+
+/* ---------- the project field in the galaxy ---------- */
+.galaxy-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  touch-action: pan-y;
+  -webkit-tap-highlight-color: transparent;
+}
+.galaxy-layer.is-on {
+  pointer-events: auto;
+}
+.galaxy-layer.is-hot {
+  cursor: pointer;
+}
+
+.g-label {
+  position: absolute;
+  left: 50%;
+  bottom: max(26px, env(safe-area-inset-bottom));
+  transform: translate(-50%, 10px);
+  width: max-content;
+  max-width: calc(100vw - 32px);
+  padding: 22px 46px 4px;
+  text-align: center;
+  background: radial-gradient(ellipse 60% 70% at 50% 60%, rgba(5, 5, 6, 0.85), rgba(5, 5, 6, 0));
+  opacity: 0;
+  filter: blur(6px);
+  transition: opacity 0.45s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), filter 0.45s ease;
+}
+.g-label.is-on {
+  opacity: 1;
+  transform: translate(-50%, 0);
+  filter: blur(0);
+  pointer-events: auto;
+}
+.g-label a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: inherit;
+  text-decoration: none;
+}
+.g-kind,
+.g-open {
+  font-size: 10px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.g-title {
+  font-family: var(--display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(30px, 4.2vw, 58px);
+  line-height: 1;
+  letter-spacing: 0.01em;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.8);
+}
+.g-open {
+  color: var(--ink);
+}
+
+/* keyboard users get a plain list of the projects */
+.g-nav a {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+.g-nav a:focus-visible {
+  left: 50%;
+  bottom: 30px;
+  width: auto;
+  height: auto;
+  clip: auto;
+  transform: translateX(-50%);
+  padding: 10px 18px;
+  pointer-events: auto;
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 28px;
+  color: var(--ink);
+  background: rgba(5, 5, 6, 0.9);
+  outline: 1px solid var(--muted);
+  outline-offset: 4px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-cue i {
+    animation: none;
+  }
+}

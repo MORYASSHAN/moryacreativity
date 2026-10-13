@@ -1,0 +1,45 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "rangefinder",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": [
+        "/c",
+        "npm run dev -- --port %PORT% --strictPort"
+      ],
+      "port": 5188,
+      "autoPort": true
+    },
+    {
+      "name": "rangefinder-alt",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": [
+        "/c",
+        "npm run dev -- --port %PORT% --strictPort"
+      ],
+      "port": 5189,
+      "autoPort": true
+    },
+    {
+      "name": "showcase",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": [
+        "/c",
+        "npm exec -- vite showcase --port %PORT% --strictPort"
+      ],
+      "port": 5190,
+      "autoPort": true
+    },
+    {
+      "name": "production-preview",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": [
+        "/c",
+        "npm run build && npm run preview -- --port %PORT% --strictPort"
+      ],
+      "port": 4173,
+      "autoPort": true
+    }
+  ]
+}

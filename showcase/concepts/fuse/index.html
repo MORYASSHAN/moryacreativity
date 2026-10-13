@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FUSE — Sparkling energy. Zero chill.</title>
+<meta name="description" content="FUSE is a loud sparkling energy drink: 160 mg natural caffeine, zero sugar, four flavours that fight back. Light the fuse, catch the next drop.">
+<meta name="theme-color" content="#5ab8f5">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Rubik:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="back-link" href="../../../#galaxy">← Back to the galaxy</a>
+
+<header class="nav">
+  <a class="logo" href="#top" aria-label="FUSE home"><svg viewBox="0 0 24 32" aria-hidden="true"><path d="M14 1 2 18h8l-3 13L22 12h-8z"/></svg>FUSE</a>
+  <nav class="nav-links" aria-label="Primary">
+    <a href="#flavours">Flavours</a><a href="#inside">Inside</a><a href="#drops">Drops</a>
+  </nav>
+  <a class="btn btn-lime btn-sm" href="#flavours">Grab a 12-pack</a>
+</header>
+
+<main id="top">
+  <!-- HERO -->
+  <section class="hero" id="hero" aria-label="FUSE energy drink">
+    <div class="shake" id="shake">
+      <div class="rays-wrap" aria-hidden="true"><div class="rays" id="rays"></div></div>
+
+      <svg class="cloud c1 drift" viewBox="0 0 220 110" aria-hidden="true"><path d="M40 92c-22 0-32-14-28-28 4-15 20-20 32-16 2-20 22-34 44-28 10-20 44-24 60-4 22-6 46 8 44 32 18 4 24 20 16 32-4 8-12 12-22 12z"/></svg>
+      <svg class="cloud c2 drift" viewBox="0 0 220 110" aria-hidden="true"><path d="M40 92c-22 0-32-14-28-28 4-15 20-20 32-16 2-20 22-34 44-28 10-20 44-24 60-4 22-6 46 8 44 32 18 4 24 20 16 32-4 8-12 12-22 12z"/></svg>
+      <svg class="cloud c3 drift" viewBox="0 0 220 110" aria-hidden="true"><path d="M40 92c-22 0-32-14-28-28 4-15 20-20 32-16 2-20 22-34 44-28 10-20 44-24 60-4 22-6 46 8 44 32 18 4 24 20 16 32-4 8-12 12-22 12z"/></svg>
+      <svg class="cloud c4 drift" viewBox="0 0 220 110" aria-hidden="true"><path d="M40 92c-22 0-32-14-28-28 4-15 20-20 32-16 2-20 22-34 44-28 10-20 44-24 60-4 22-6 46 8 44 32 18 4 24 20 16 32-4 8-12 12-22 12z"/></svg>
+
+      <div class="planes" id="planes" aria-hidden="true"></div>
+
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <p class="sticker scatter" style="--sx:-40vw;--sy:-30vh;--sr:-80deg">NEW · DROP 07 just landed</p>
+          <p class="logotype" aria-hidden="true">
+            <span class="scatter" style="--c:var(--pink);--sx:-60vw;--sy:-40vh;--sr:-160deg"><i>F</i></span><span class="scatter" style="--c:var(--lime);--sx:-20vw;--sy:-70vh;--sr:200deg"><i>U</i></span><span class="scatter" style="--c:var(--cyan);--sx:30vw;--sy:-60vh;--sr:-120deg"><i>S</i></span><span class="scatter" style="--c:#fff;--sx:60vw;--sy:-20vh;--sr:180deg"><i>E</i></span>
+          </p>
+          <h1 class="scatter" style="--sx:-50vw;--sy:30vh;--sr:30deg">Sparkling energy.<br>Zero chill.</h1>
+          <p class="lede scatter" style="--sx:-40vw;--sy:60vh;--sr:-20deg">160&nbsp;mg of natural caffeine, zero sugar and a fizz that fights back. Light responsibly.</p>
+          <div class="cta-row scatter" style="--sx:-10vw;--sy:70vh;--sr:15deg">
+            <button class="btn btn-pink" id="lightBtn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c1 4 6 6 6 12a6 6 0 0 1-12 0c0-3 2-5 3-7 0 2 1 3 2 3 0-3-1-5 1-8z"/></svg>Light it</button>
+            <a class="btn btn-white" href="#flavours">See flavours</a>
+          </div>
+        </div>
+
+        <div class="stage">
+          <svg class="burst-bg" viewBox="0 0 600 600" aria-hidden="true">
+            <circle cx="300" cy="300" r="250" fill="#6b5cf0" stroke="#121018" stroke-width="8"/>
+            <polygon id="star" fill="#ff5fae" stroke="#121018" stroke-width="7" stroke-linejoin="round"/>
+          </svg>
+          <button class="mascot-btn scatter" id="mascotBtn" type="button" aria-label="Light Kaboo's fuse" style="--sx:20vw;--sy:-80vh;--sr:360deg">
+            <svg class="mascot" id="mascot" viewBox="0 0 400 560" aria-hidden="true"></svg>
+          </button>
+          <p class="tap-hint" aria-hidden="true">tap Kaboo ↑</p>
+        </div>
+      </div>
+
+      <div class="countdown" id="countdown" aria-live="assertive"></div>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <section class="marquee" aria-label="FUSE slogans">
+    <div class="band band-a"><div class="track" data-dir="-1"></div></div>
+    <div class="band band-b"><div class="track" data-dir="1"></div></div>
+  </section>
+
+  <!-- FLAVOURS -->
+  <section class="flavours" id="flavours">
+    <div class="sec-top">
+      <div>
+        <p class="tag pop">04 flavours · 330 ml</p>
+        <h2 class="pop">Pick your<br><span class="hl">flavour blast</span></h2>
+      </div>
+      <div class="car-ctrl">
+        <button class="round-btn" id="prevBtn" type="button" aria-label="Previous flavour">←</button>
+        <button class="round-btn" id="nextBtn" type="button" aria-label="Next flavour">→</button>
+      </div>
+    </div>
+    <div class="carousel" id="carousel" tabindex="0" aria-label="Flavours carousel"></div>
+  </section>
+
+  <!-- INSIDE -->
+  <section class="inside" id="inside">
+    <svg class="badge" viewBox="0 0 200 200" aria-hidden="true">
+      <defs><path id="circ" d="M100,100 m-70,0 a70,70 0 1,1 140,0 a70,70 0 1,1 -140,0"/></defs>
+      <circle cx="100" cy="100" r="95" fill="#ff5fae" stroke="#121018" stroke-width="5"/>
+      <circle cx="100" cy="100" r="50" fill="#fff" stroke="#121018" stroke-width="5"/>
+      <text font-family="Bowlby One, Impact, sans-serif" font-size="19" letter-spacing="2.2" fill="#121018"><textPath href="#circ">ZERO SUGAR • 160 MG • NO CRASH • ZERO SUGAR •</textPath></text>
+      <path d="M106 66 80 106h16l-6 30 32-44h-16l6-26z" fill="#e8ff4a" stroke="#121018" stroke-width="4.5" stroke-linejoin="round"/>
+    </svg>
+    <div class="sec-top">
+      <div>
+        <p class="tag pop">the science-ish</p>
+        <h2 class="pop">What's inside<br>the can</h2>
+      </div>
+      <p class="sec-lede pop">No mystery syrup, no neon dye, no 3pm crash. Just a short list of things that work — fizzed hard enough to make your eyebrows leave.</p>
+    </div>
+    <div class="stats">
+      <div class="stat pop" style="--bg:var(--pink)"><b><span data-to="160">0</span><small>mg</small></b><p>natural caffeine from green tea &amp; guayusa</p></div>
+      <div class="stat pop" style="--bg:var(--cyan);--d:.08s"><b><span data-to="0">0</span><small>g</small></b><p>sugar. Sweetened with monk fruit</p></div>
+      <div class="stat pop" style="--bg:#fff;--d:.16s"><b><span data-to="10">0</span><small>kcal</small></b><p>per can. Basically air with attitude</p></div>
+      <div class="stat pop dark" style="--bg:var(--violet);--d:.24s"><b><span data-to="6">0</span><small>B&#8209;vits</small></b><p>B3, B5, B6, B7, B9 &amp; B12 for actual focus</p></div>
+    </div>
+    <ul class="chips" aria-label="Also inside">
+      <li class="pop" style="--r:-6deg">electrolytes</li>
+      <li class="pop" style="--r:4deg">5% real fruit juice</li>
+      <li class="pop" style="--r:-3deg">L-theanine (calm-ish)</li>
+      <li class="pop" style="--r:7deg">no artificial colours</li>
+      <li class="pop" style="--r:-5deg">vegan</li>
+      <li class="pop" style="--r:3deg">100% recyclable can</li>
+    </ul>
+  </section>
+
+  <!-- DROPS / EVENTS -->
+  <section class="drops" id="drops">
+    <div class="drop-card pop">
+      <div class="drop-info">
+        <p class="tag light">limited drop 07</p>
+        <h2>Midnight<br>Mango</h2>
+        <p class="sec-lede">Ripe alphonso, a pinch of chili, glow-in-the-dark can. 20,000 cans, one night only. When they're gone, they're <em>gone</em> gone.</p>
+        <button class="btn btn-lime" id="remindBtn" type="button" aria-pressed="false">Remind me</button>
+      </div>
+      <div class="drop-right">
+      <div class="drop-can" id="dropCan" aria-hidden="true"></div>
+      <div class="timer" role="timer" aria-label="Time until drop 07">
+        <div class="tbox"><b id="tD">00</b><span>days</span></div>
+        <div class="tbox"><b id="tH">00</b><span>hrs</span></div>
+        <div class="tbox"><b id="tM">00</b><span>min</span></div>
+        <div class="tbox"><b id="tS">00</b><span>sec</span></div>
+      </div>
+      </div>
+    </div>
+
+    <div class="tour">
+      <h3 class="pop">FUSE BOX tour <span>— free cans, loud DJs, one giant inflatable bomb</span></h3>
+      <ol class="tour-list">
+        <li class="pop"><time>24 Oct</time><span class="city">Berlin</span><span class="venue">Halle am Kanal</span><button class="rsvp" type="button">RSVP</button></li>
+        <li class="pop"><time>31 Oct</time><span class="city">Amsterdam</span><span class="venue">Dok 9 Rooftop</span><button class="rsvp" type="button">RSVP</button></li>
+        <li class="pop"><time>08 Nov</time><span class="city">London</span><span class="venue">Arches, Bermondsey</span><span class="sold">Sold out</span></li>
+        <li class="pop"><time>15 Nov</time><span class="city">Barcelona</span><span class="venue">Nau Poblenou</span><button class="rsvp" type="button">RSVP</button></li>
+        <li class="pop"><time>22 Nov</time><span class="city">Tokyo</span><span class="venue">Shibuya Underpass</span><button class="rsvp" type="button">RSVP</button></li>
+      </ol>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="foot-top">
+    <div>
+      <h2 class="pop">Get drop alerts<br>before they blow.</h2>
+      <form class="news pop" id="newsForm" novalidate>
+        <label class="sr-only" for="email">Email address</label>
+        <input id="email" type="email" placeholder="your@email.com" autocomplete="email" required>
+        <button class="btn btn-pink" type="submit">Sign me up</button>
+        <p class="news-done" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+    <nav class="foot-links" aria-label="Footer">
+      <a href="#flavours">Flavours</a><a href="#inside">Inside</a><a href="#drops">Drops</a><a href="#top">Back to top ↑</a>
+    </nav>
+  </div>
+  <p class="foot-word" aria-hidden="true">FUSE</p>
+  <p class="legal">High caffeine content (48&nbsp;mg/100&nbsp;ml). Not recommended for children or pregnant or breast-feeding women. © 2026 FUSE Beverage Co. — a concept by Shaan; FUSE is not a real drink (yet).</p>
+</footer>
+
+<canvas class="boom-canvas" id="boom" aria-hidden="true"></canvas>
+<div class="kaboom" id="kaboom" aria-hidden="true"><svg viewBox="0 0 600 400"><polygon id="kaboomStar" fill="#e8ff4a" stroke="#121018" stroke-width="10" stroke-linejoin="round"/></svg><span>KA-BOOM!</span></div>
+<div class="flash" id="flash" aria-hidden="true"></div>
+
+<script src="main.js"></script>
+</body>
+</html>

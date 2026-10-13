@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EMBER — Every ember is a story · Wildfire relief collective</title>
+<meta name="description" content="EMBER is a volunteer wildfire-relief collective: we clear firebreaks before the season, shelter families during it, and rebuild and replant long after the smoke.">
+<meta name="theme-color" content="#121010">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat+Brush&family=Hanken+Grotesk:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=Permanent+Marker&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<canvas id="paper" aria-hidden="true"></canvas>
+
+<!-- shared hand-drawn filters -->
+<svg class="defs" width="0" height="0" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="rough" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="4" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="4" xChannelSelector="R" yChannelSelector="G" result="d"/>
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="1" seed="9" result="g"/>
+      <feColorMatrix in="g" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.2 1.75" result="ga"/>
+      <feComposite in="d" in2="ga" operator="in"/>
+    </filter>
+    <linearGradient id="seasonGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffe9a0"/>
+      <stop offset=".22" stop-color="#ffc93c"/>
+      <stop offset=".42" stop-color="#ff8a00"/>
+      <stop offset=".58" stop-color="#ff1a0e"/>
+      <stop offset=".76" stop-color="#7d7671"/>
+      <stop offset="1" stop-color="#5f9a4a"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<a class="back" href="../../../#galaxy">← Back to the galaxy</a>
+
+<header class="nav">
+  <a class="logo" href="#top" aria-label="EMBER home">EMBER<svg viewBox="0 0 120 14" aria-hidden="true"><path d="M3 9 C 30 4, 60 12, 117 5 M8 11 C 40 8, 80 10, 112 8" /></svg></a>
+  <nav aria-label="Primary">
+    <a href="#numbers">The season</a>
+    <a href="#help">How we help</a>
+    <a href="#timeline">Timeline</a>
+    <a class="nav-give" href="#give">Give</a>
+  </nav>
+</header>
+
+<main id="top">
+  <!-- HERO -->
+  <section class="hero" id="hero" aria-label="Every ember is a story">
+    <div class="hero-stick">
+      <canvas id="fire" aria-label="A hand-drawn wildfire moving across a ridge toward a small white house. Press and hold to rain water on the flames." role="img"></canvas>
+      <div class="hero-copy">
+        <p class="kicker"><span class="dot"></span>A wildfire relief collective · est. 2019</p>
+        <h1 class="headline"><span class="ln">Every ember</span><span class="ln">is a <em>story.</em></span></h1>
+      </div>
+      <p class="lede">We stand between wildfire and the people in its path — clearing the land before the season, sheltering families during it, and rebuilding long after the smoke has gone.</p>
+      <p class="annot" aria-hidden="true">press &amp; hold to rain<svg viewBox="0 0 80 60"><path d="M4 6 C 30 4, 58 18, 66 48 M56 40 L67 50 L72 36"/></svg></p>
+      <div class="hero-foot">
+        <p class="caption" aria-live="polite"><span class="cap-time">06:12</span> <span class="cap-text">A spark on the ridge.</span></p>
+        <dl class="hud">
+          <div><dt>Front to last house</dt><dd><span id="dist">2.4</span> km</dd></div>
+          <div><dt>Line you've held</dt><dd><span id="held">0</span> m</dd></div>
+        </dl>
+        <p class="scrollcue">scroll — watch how fast it travels <span aria-hidden="true">↓</span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- NUMBERS -->
+  <section class="numbers" id="numbers">
+    <div class="sec-head">
+      <p class="eyebrow">01 — The season, counted</p>
+      <h2>Last summer the fire moved faster than the news.<br><em>These are the numbers we carry.</em></h2>
+    </div>
+    <div class="stats">
+      <article class="stat reveal">
+        <p class="num"><span class="count" data-to="412380">412,380</span></p>
+        <svg class="underline" viewBox="0 0 300 30" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M4 18 C 60 8, 140 26, 296 12 M14 23 C 90 16, 180 22, 286 18"/></svg>
+        <h3>hectares burned</h3>
+        <p>Across four valleys in a single season — an area the wind crossed in eleven days and the land will take thirty years to forget.</p>
+      </article>
+      <article class="stat reveal">
+        <p class="num"><span class="count" data-to="1184">1,184</span></p>
+        <svg class="underline red" viewBox="0 0 300 30" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M6 14 C 80 24, 170 6, 294 16 M10 20 C 100 26, 200 12, 290 22"/></svg>
+        <h3>homes lost</h3>
+        <p>Nine in ten stood within thirty metres of unmanaged brush. Most of that brush could have been cleared by twelve people with hand tools in a weekend.</p>
+      </article>
+      <article class="stat reveal">
+        <p class="num"><span class="count" data-to="6420">6,420</span></p>
+        <svg class="underline yel" viewBox="0 0 300 30" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M4 12 C 70 22, 150 4, 296 18 M20 22 C 110 14, 210 26, 284 14"/></svg>
+        <h3>volunteers</h3>
+        <p>Trained, insured, fed, and — every single one of them — sent home safe. Teachers, mechanics, nurses, a retired pilot, two hundred students.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- HOW WE HELP -->
+  <section class="help" id="help">
+    <div class="sec-head">
+      <p class="eyebrow">02 — How we help</p>
+      <h2>Fire has three seasons. <em>So do we.</em></h2>
+    </div>
+    <div class="help-grid">
+      <article class="card reveal">
+        <svg class="icon" viewBox="0 0 160 160" aria-hidden="true">
+          <g class="ink cream">
+            <path pathLength="1" d="M28 136 L118 30 M31 139 L121 33"/>
+            <path pathLength="1" d="M100 18 L142 54 M97 22 L139 58"/>
+            <path pathLength="1" d="M106 26 L96 38 M114 33 L104 45 M122 40 L112 52 M130 47 L120 59 M137 53 L128 64"/>
+          </g>
+          <g class="ink green">
+            <path pathLength="1" d="M10 146 C 40 140, 60 150, 90 144 C 110 140, 130 148, 152 142"/>
+            <path pathLength="1" d="M16 152 l4 -10 M30 153 l3 -12 M46 154 l2 -9 M120 152 l4 -12 M134 151 l3 -10 M146 152 l-2 -9"/>
+          </g>
+        </svg>
+        <p class="when">Before</p>
+        <h3>Clear &amp; prepare</h3>
+        <p>We cut firebreaks, thin fuel loads around homes and schools, and run door-to-door readiness drills in the villages the maps forget.</p>
+        <p class="tally"><span>214 km</span> of break cut last spring</p>
+      </article>
+      <article class="card reveal">
+        <svg class="icon" viewBox="0 0 160 160" aria-hidden="true">
+          <g class="ink cream">
+            <path pathLength="1" d="M18 132 L80 30 L142 132 Z M22 134 L80 36 L138 134"/>
+            <path pathLength="1" d="M80 30 L80 132 M80 62 C 70 90, 62 112, 58 132 M80 62 C 90 90, 98 112, 102 132"/>
+            <path pathLength="1" d="M80 30 L72 16 M80 30 L88 14 M18 132 L4 146 M142 132 L156 146"/>
+          </g>
+          <g class="ink orange">
+            <path pathLength="1" d="M70 108 C 66 100, 74 96, 80 104 C 86 96, 94 100, 90 108 C 86 116, 80 120, 80 122 C 80 120, 74 116, 70 108"/>
+          </g>
+        </svg>
+        <p class="when">During</p>
+        <h3>Shelter &amp; supply</h3>
+        <p>When the evacuation call comes we are already there: go-bags, water, warm meals, animal crates, phone chargers, and someone who knows your name.</p>
+        <p class="tally"><span>31,900</span> nights of shelter given</p>
+      </article>
+      <article class="card reveal">
+        <svg class="icon" viewBox="0 0 160 160" aria-hidden="true">
+          <g class="ink char">
+            <path pathLength="1" d="M40 146 L46 104 L58 100 L64 92 L74 104 L92 98 L104 108 L112 146 M44 146 L50 108 M108 146 L102 112"/>
+            <path pathLength="1" d="M60 112 l1 28 M76 108 l-1 32 M92 112 l2 26"/>
+          </g>
+          <g class="ink green">
+            <path pathLength="1" d="M78 100 C 80 80, 76 64, 80 40 M81 100 C 83 80, 79 64, 83 42"/>
+            <path pathLength="1" d="M80 62 C 64 44, 44 46, 36 56 C 52 66, 68 66, 80 62 M80 50 C 96 30, 118 32, 126 42 C 110 54, 94 54, 80 50"/>
+          </g>
+          <g class="ink cream"><path pathLength="1" d="M8 148 C 50 144, 110 152, 152 146"/></g>
+        </svg>
+        <p class="when">After</p>
+        <h3>Rebuild &amp; replant</h3>
+        <p>Grants that arrive in days, not months. Volunteer crews for clean-up. And for every hectare lost, native seedlings raised in our community nurseries.</p>
+        <p class="tally"><span>88,000</span> native seedlings planted</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- TIMELINE -->
+  <section class="timeline" id="timeline">
+    <div class="sec-head">
+      <p class="eyebrow">03 — Anatomy of a fire season</p>
+      <h2>It never starts with the flames. <em>It starts with the dry.</em></h2>
+    </div>
+    <div class="tl">
+      <svg class="tl-line" id="tlLine" aria-hidden="true" preserveAspectRatio="none"><path id="tlPath" d="" /></svg>
+      <ol class="tl-list">
+        <li class="tl-item reveal"><span class="m">April</span><h3>The dry arrives</h3><p>Rain stops early. Grass cures to gold, then to tinder. We train new crews and walk every firebreak.</p></li>
+        <li class="tl-item reveal"><span class="m">May</span><h3>Fuel moisture falls below 10%</h3><p>A dropped cigarette is now a forecast. We pre-position water tanks and go-bags in forty-two villages.</p></li>
+        <li class="tl-item reveal"><span class="m">July</span><h3>Ignition</h3><p>Dry lightning, a power line, a careless spark. The first column of smoke is visible from three valleys.</p></li>
+        <li class="tl-item reveal"><span class="m">August</span><h3>The front runs</h3><p>With wind behind it the fire moves six kilometres an hour. Evacuation calls go out. Our shelters open within ninety minutes.</p></li>
+        <li class="tl-item reveal"><span class="m">September</span><h3>Holding the line</h3><p>Brigades hold; volunteers feed them. We run supply lines, animal rescue and a hotline that never sleeps.</p></li>
+        <li class="tl-item reveal"><span class="m">October</span><h3>Rain. Ash. Counting.</h3><p>The first rain smells like a bonfire. Families return to what is left. We are at the gate with gloves and a plan.</p></li>
+        <li class="tl-item reveal"><span class="m">Nov — Mar</span><h3>Green, again</h3><p>Rebuild grants, mental-health circles, and seedlings in the ground before the next dry comes.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- DONATE -->
+  <section class="give" id="give">
+    <div class="give-inner reveal">
+      <div class="give-copy">
+        <p class="eyebrow">04 — Give</p>
+        <h2>Put one <em>out.</em></h2>
+        <p>Every gift goes to the ground, not the overheads — our crews are volunteers and our audits are public. Choose an amount and we'll tell you exactly what it becomes.</p>
+        <div class="alloc">
+          <p class="alloc-h">Where last season's gifts went</p>
+          <div class="bar" aria-hidden="true"><span class="b1" style="--w:82%"></span><span class="b2" style="--w:11%"></span><span class="b3" style="--w:7%"></span></div>
+          <ul>
+            <li><i class="b1"></i><b>82%</b> on the ground — shelter, supplies, grants</li>
+            <li><i class="b2"></i><b>11%</b> training &amp; safety gear</li>
+            <li><i class="b3"></i><b>7%</b> running the collective</li>
+          </ul>
+        </div>
+      </div>
+      <form class="give-form" id="giveForm" novalidate>
+        <div class="freq" role="radiogroup" aria-label="Frequency">
+          <button type="button" role="radio" aria-checked="true" class="on" data-freq="once">Once</button>
+          <button type="button" role="radio" aria-checked="false" data-freq="monthly">Monthly</button>
+        </div>
+        <div class="chips" role="radiogroup" aria-label="Amount">
+          <button type="button" role="radio" class="chip" aria-checked="false" data-amt="15" data-what="a pair of fire-rated gloves for a new volunteer">$15</button>
+          <button type="button" role="radio" class="chip on" aria-checked="true" data-amt="40" data-what="a 72-hour go-bag for one family">$40</button>
+          <button type="button" role="radio" class="chip" aria-checked="false" data-amt="120" data-what="a night of shelter and hot meals for a family of four">$120</button>
+          <button type="button" role="radio" class="chip" aria-checked="false" data-amt="500" data-what="a portable pump and hose for a rural brigade">$500</button>
+          <svg class="circle" viewBox="0 0 120 70" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M62 6 C 20 4, 4 24, 10 44 C 18 66, 96 70, 112 42 C 122 22, 96 4, 56 8 C 40 10, 30 14, 24 20"/></svg>
+        </div>
+        <label class="other"><span>or another amount</span><span class="other-in">$<input type="number" min="1" inputmode="numeric" id="otherAmt" placeholder="—" aria-label="Other amount in dollars"></span></label>
+        <p class="becomes" aria-live="polite">$40 becomes <strong>a 72-hour go-bag for one family</strong>.</p>
+        <button class="cta" type="submit"><span id="ctaLabel">Give $40</span> <span aria-hidden="true">→</span></button>
+        <p class="fine">Demo only — this concept page doesn't take payments.</p>
+        <div class="thanks" hidden>
+          <svg viewBox="0 0 120 120" aria-hidden="true"><path pathLength="1" d="M60 104 C 58 80, 62 60, 60 34 M60 70 C 44 52, 26 54, 20 64 C 36 74, 50 74, 60 70 M60 56 C 76 38, 96 40, 102 50 C 86 60, 72 60, 60 56"/></svg>
+          <h3>Thank you.</h3>
+          <p>In a real season, that would already be on a truck. (This is a concept — no money moved.)</p>
+          <button type="button" class="again">Back</button>
+        </div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <svg class="wordmark" viewBox="0 0 900 200" role="img" aria-label="EMBER"><text x="50%" y="160" text-anchor="middle">EMBER</text></svg>
+  <div class="foot-cols">
+    <div>
+      <p class="foot-tag">Every ember is a story.<br>Help us write a better ending.</p>
+    </div>
+    <div>
+      <h4>Collective</h4>
+      <ul><li><a href="#numbers">Our season</a></li><li><a href="#help">What we do</a></li><li><a href="#timeline">Fire year</a></li></ul>
+    </div>
+    <div>
+      <h4>Get involved</h4>
+      <ul><li><a href="#give">Donate</a></li><li><a href="#help">Volunteer</a></li><li><a href="#give">Corporate partners</a></li></ul>
+    </div>
+    <div>
+      <h4>Field notes</h4>
+      <form class="news" id="news"><label for="em" class="sr">Email</label><input id="em" type="email" placeholder="you@valley.org" required><button type="submit">Join</button></form>
+      <p class="news-ok" hidden>Thank you — the first letter arrives with the first rain.</p>
+    </div>
+  </div>
+  <p class="legal">A concept by Moryasshan. EMBER is not a real organisation; figures are illustrative.</p>
+</footer>
+
+<script src="main.js"></script>
+</body>
+</html>
