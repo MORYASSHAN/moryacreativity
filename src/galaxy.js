@@ -127,7 +127,12 @@ export function openItem(i) {
   const it = ITEMS[i];
   if (!it) return;
   if (it.live) window.open(it.href, '_blank', 'noopener');
-  else location.href = it.href;
+  else {
+    // coming Back to this entry lands straight in the galaxy (Overlay's #galaxy path)
+    // instead of reloading at the bottom and replaying the whole dive
+    history.replaceState(history.state, '', '#galaxy');
+    location.href = it.href;
+  }
 }
 
 export const DEG = Math.PI / 180;

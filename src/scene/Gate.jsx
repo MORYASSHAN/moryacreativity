@@ -245,6 +245,10 @@ function Lens({ S }) {
     irisMat.uniforms.uAperture.value = 0.62 + 0.38 * open;
     irisMat.uniforms.uClear.value = open;
     frontGlass.opacity = 1 - open;
+    // fully open it adds nothing (additive, opacity 0), but it is a double-sided
+    // clearcoat + iridescence material that fills the whole screen as the camera
+    // reaches the lens: skip its two draws instead of shading them for nothing
+    frontGlass.visible = open < 0.999;
   });
 
   return (
@@ -257,12 +261,14 @@ function Lens({ S }) {
         <torusGeometry args={[0.186 * S, 0.006 * S, 8, 72]} />
       </mesh>
 
-      {/* blades */}
-      <mesh material={irisMat}>
+      {/* blades. They write depth, so they are drawn after the stars (1) and the project
+          cards (2) seen through the bore: the widening opening then fades those in (drawn
+          first, it hid them until fully open and they all popped in at p≈0.45) */}
+      <mesh material={irisMat} renderOrder={3}>
         <circleGeometry args={[r, 96]} />
       </mesh>
       {/* coated front element: only its reflections are added on top */}
-      <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, 0, 0.004 * S - capR * Math.cos(theta)]} material={frontGlass}>
+      <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, 0, 0.004 * S - capR * Math.cos(theta)]} material={frontGlass} renderOrder={3}>
         <sphereGeometry args={[capR, 64, 12, 0, Math.PI * 2, 0, theta]} />
       </mesh>
 
@@ -277,7 +283,8 @@ function Lens({ S }) {
       ))}
       {ELEMENTS.map((f, i) => (
         <group key={f} position={[0, 0, -f * len]}>
-          <mesh material={innerGlass}>
+          {/* additive coating: drawn after the cards behind it so they don't paint over it */}
+          <mesh material={innerGlass} renderOrder={3}>
             <circleGeometry args={[r * (0.97 - i * 0.05), 64]} />
           </mesh>
           <mesh material={M.steel}>

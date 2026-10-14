@@ -1,8 +1,10 @@
 import { useSyncExternalStore } from 'react';
 
 // React-facing state: only what the DOM layer re-renders on.
+//   ready: camera textures are in; cardsReady: project textures loaded and warmed up
+//   entered: the visitor has come through the intro
 //   galaxy: the dive has arrived among the projects; hot: hovered project index
-let state = { ready: false, progress: 0, galaxy: false, hot: -1 };
+let state = { ready: false, cardsReady: false, entered: false, progress: 0, cardProgress: 0, galaxy: false, hot: -1 };
 const subs = new Set();
 
 export function setState(patch) {

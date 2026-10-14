@@ -76,7 +76,9 @@ function CameraDive({ L }) {
     const aim = q1;
     camera.position.set(lens.x * aim, lens.y * aim, z);
     // the camera only tilts; turning left/right spins the ring of cards and stars instead
-    direction(0, G.pitch, look).multiplyScalar(10).add(camera.position);
+    // the tilt belongs to the galaxy: it fades out with the scroll on the way back, so the
+    // camera is always level in the lens and at rest, whatever G.pitch was left at
+    direction(0, G.pitch * easeInOut(range(anim.p, b, c)), look).multiplyScalar(10).add(camera.position);
     camera.lookAt(look);
     const fov = FOV + 14 * easeInOut(range(anim.p, flyEnd, b));
     if (Math.abs(camera.fov - fov) > 1e-3) {
@@ -98,9 +100,65 @@ function Lights() {
   );
 }
 
+// Keeps the motion fluid on any GPU. Every half second the average frame time is
+// checked: two slow windows in a row step down a rung, a long fast stretch steps
+// back up (at most twice per phase, so a GPU that can't keep up doesn't flip back
+// and forth). The composer's 4x MSAA (a multisampled half-float buffer plus its
+// resolve) is the biggest single cost on integrated GPUs, so it is part of the
+// ladder; switching it on the composer only resizes its buffers (no rebuild, no
+// recompile). The dive gives up resolution first (its thin metal edges shimmer
+// without AA), the galaxy gives up MSAA first (the screenshots need the pixels),
+// and each keeps its own rung, so a heavy stretch of the dive never leaves the
+// cards blurry.
+const composerRef = { current: null };
+const HI_DPR = Math.min(typeof devicePixelRatio === 'number' ? devicePixelRatio : 1, 1.5);
+const LADDERS = [
+  // [pixel ratio, MSAA samples], cheapest first; both phases start on [1, 4] (index 4)
+  [[0.6, 0], [0.7, 0], [0.85, 0], [0.85, 4], [1, 4]], // dive
+  [[0.6, 0], [0.75, 0], [0.9, 0], [1, 0], [1, 4], [HI_DPR, 4]], // galaxy
+];
+const GALAXY_AT = TIMELINE.space[1] - 0.03; // the camera has all but stopped here
+
+function AdaptiveQuality() {
+  const st = useMemo(() => ({ level: [4, 4], ups: [2, 2], phase: 0, sum: 0, n: 0, slow: 0, fast: 0, skip: 6 }), []);
+  useFrame((state, delta) => {
+    const phase = anim.p >= GALAXY_AT ? 1 : 0;
+    if (phase !== st.phase) {
+      st.phase = phase;
+      st.sum = st.n = st.slow = st.fast = 0;
+      st.skip = Math.max(st.skip, 1);
+    }
+    // apply this phase's rung (and re-apply it if <Canvas dpr={1}> reset the ratio on a resize)
+    const [dpr, msaa] = LADDERS[phase][st.level[phase]];
+    if (state.viewport.dpr !== dpr) state.setDpr(dpr);
+    const composer = composerRef.current;
+    if (composer && composer.multisampling !== msaa) composer.multisampling = msaa;
+
+    // ignore hidden tabs and one-off hitches (texture uploads, tab switches)
+    if (document.hidden || delta > 0.25) return;
+    st.sum += delta;
+    st.n++;
+    if (st.sum < 0.5) return;
+    const avg = st.sum / st.n;
+    st.sum = st.n = 0;
+    if (st.skip > 0) return void st.skip--; // shaders compiling / buffers just reallocated
+    st.slow = avg > 1 / 50 ? st.slow + 1 : 0;
+    st.fast = avg < 1 / 58 ? st.fast + 1 : 0;
+    const lv = st.level[phase];
+    if (st.slow >= 2 && lv > 0) st.level[phase] = lv - 1;
+    else if (st.fast >= 12 && st.ups[phase] > 0 && lv < LADDERS[phase].length - 1) {
+      st.level[phase] = lv + 1;
+      st.ups[phase]--;
+    } else return;
+    st.slow = st.fast = 0;
+    st.skip = 1; // the next frame reallocates the buffers: don't time it
+  });
+  return null;
+}
+
 function Effects() {
   return (
-    <EffectComposer multisampling={4}>
+    <EffectComposer ref={composerRef} multisampling={4}>
       <Bloom mipmapBlur intensity={0.5} luminanceThreshold={0.78} luminanceSmoothing={0.2} radius={0.7} />
       <Noise blendFunction={BlendFunction.SOFT_LIGHT} opacity={0.16} />
       <Vignette offset={0.3} darkness={0.6} />
@@ -150,6 +208,7 @@ export default function Scene() {
       <Gate L={L} />
       <Galaxy L={L} />
       <Constellation end={end} />
+      <AdaptiveQuality />
       <Effects />
     </>
   );

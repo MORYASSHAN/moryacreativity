@@ -10,7 +10,7 @@ export default function App() {
       <Canvas
         className="stage"
         flat
-        dpr={[1, 2]}
+        dpr={1}
         camera={{ fov: FOV, position: [0, 0, CAM_Z], near: 0.05, far: 220 }}
         gl={{ antialias: false, powerPreference: 'high-performance' }}
       >
@@ -22,7 +22,7 @@ export default function App() {
       <main>
         {/* scrolling through this section flies the camera into the lens */}
         <section id="dive" aria-label="Into the lens">
-          <h1 className="sr-only">Rangefinder — four frames, one story</h1>
+          <h1 className="sr-only">moryacreativity — projects by Moryasshan</h1>
         </section>
       </main>
     </>
