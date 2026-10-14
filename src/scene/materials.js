@@ -14,23 +14,25 @@ function rng(seed) {
   return () => (s = (s * 16807) % 2147483647) / 2147483647;
 }
 
-// Hammered / pebbled body finish, seamless.
+// Pebbled leatherette body covering, seamless.
 function pebbleCanvas() {
-  const S = 512;
+  const S = 1024;
   const [c, g] = makeCanvas(S, S);
   const r = rng(11);
   g.fillStyle = '#c9c9c6';
   g.fillRect(0, 0, S, S);
-  for (let i = 0; i < 9000; i++) {
+  for (let i = 0; i < 16000; i++) {
     const x = r() * S, y = r() * S;
-    const rad = 0.7 + r() * 2.8;
+    const rad = 1.5 + r() * 5.5;
     const ry = rad * (0.55 + r() * 0.5);
     const rot = r() * Math.PI;
     const l = Math.round(150 + r() * 100);
     const a = 0.16 + r() * 0.26;
     g.fillStyle = `rgba(${l},${l},${l - 2},${a})`;
     for (const dx of [-S, 0, S]) {
+      if (x + dx < -8 || x + dx > S + 8) continue;
       for (const dy of [-S, 0, S]) {
+        if (y + dy < -8 || y + dy > S + 8) continue;
         g.beginPath();
         g.ellipse(x + dx, y + dy, rad, ry, rot, 0, Math.PI * 2);
         g.fill();
@@ -39,7 +41,7 @@ function pebbleCanvas() {
   }
   // fine scratches
   g.lineCap = 'round';
-  for (let i = 0; i < 70; i++) {
+  for (let i = 0; i < 280; i++) {
     const x = r() * S, y = r() * S, len = 10 + r() * 60, ang = r() * Math.PI;
     g.strokeStyle = `rgba(${r() > 0.5 ? '255,255,255' : '70,70,70'},${0.08 + r() * 0.14})`;
     g.lineWidth = 0.5 + r() * 0.6;
@@ -53,13 +55,13 @@ function pebbleCanvas() {
 
 // Linear brushed steel.
 function brushedCanvas() {
-  const S = 512;
+  const S = 1024;
   const [c, g] = makeCanvas(S, S);
   const r = rng(5);
   g.fillStyle = '#bdbdba';
   g.fillRect(0, 0, S, S);
-  for (let i = 0; i < 2600; i++) {
-    const y = r() * S, x = r() * S, len = 40 + r() * 400;
+  for (let i = 0; i < 10400; i++) {
+    const y = r() * S, x = r() * S, len = 80 + r() * 800;
     const l = r() > 0.5 ? 235 : 120;
     g.strokeStyle = `rgba(${l},${l},${l},${0.04 + r() * 0.1})`;
     g.lineWidth = 0.6 + r() * 0.8;
@@ -79,7 +81,7 @@ function brushedCanvas() {
 
 // Diamond knurling: a grid of tiny pyramids, shaded from the top-left.
 function knurlCanvases() {
-  const S = 128, P = 16;
+  const S = 256, P = 32;
   const [c, g] = makeCanvas(S, S);
   const [hc, hg] = makeCanvas(S, S);
   const img = g.createImageData(S, S);
@@ -92,7 +94,7 @@ function knurlCanvases() {
   for (let y = 0; y < S; y++) {
     for (let x = 0; x < S; x++) {
       const h = height(x, y);
-      const shade = 0.6 + (height(x - 1, y - 1) - height(x + 1, y + 1)) * 4.5;
+      const shade = 0.6 + (height(x - 1, y - 1) - height(x + 1, y + 1)) * 9;
       const v = Math.max(0, Math.min(255, shade * 200 + h * 30));
       const i = (y * S + x) * 4;
       img.data[i] = img.data[i + 1] = img.data[i + 2] = v;
@@ -106,11 +108,63 @@ function knurlCanvases() {
   return [c, hc];
 }
 
+// Engraved guilloché border band: chrome rules and an interlaced rope of
+// sine waves, inlaid in black enamel. Tiles seamlessly along its length.
+// Returns [colour, mask] canvases (mask: white where the chrome is).
+export const BORDER_ASPECT = 8; // tile length / band width
+function borderCanvases() {
+  const TH = 192, TW = TH * BORDER_ASPECT;
+  const [mc, g] = makeCanvas(TW, TH);
+  g.fillStyle = '#000';
+  g.fillRect(0, 0, TW, TH);
+  g.strokeStyle = g.fillStyle = '#fff';
+  g.lineCap = 'round';
+  // double rules along both edges
+  for (const [y, w] of [[8, 7], [22, 3], [TH - 22, 3], [TH - 8, 7]]) {
+    g.lineWidth = w;
+    g.beginPath();
+    g.moveTo(0, y);
+    g.lineTo(TW, y);
+    g.stroke();
+  }
+  // the rope: phase-shifted sine waves, one period per band width
+  const top = 38, bot = TH - 38, mid = (top + bot) / 2, amp = (bot - top) / 2 - 3;
+  const period = TH * 2; // TW is a whole number of periods, so it tiles
+  g.lineWidth = 4.5;
+  for (let k = 0; k < 4; k++) {
+    const ph = (k / 4) * Math.PI;
+    g.beginPath();
+    for (let x = -2; x <= TW + 2; x += 2) {
+      const t = (x / period) * Math.PI * 2;
+      const y = mid + amp * Math.sin(t + ph) * (0.55 + 0.45 * Math.cos(2 * t));
+      if (x === -2) g.moveTo(x, y);
+      else g.lineTo(x, y);
+    }
+    g.stroke();
+  }
+  // studs between the rope's crossings
+  for (let i = 0; i < TW / period; i++) {
+    for (const x of [(i + 0.25) * period, (i + 0.75) * period]) {
+      g.beginPath();
+      g.arc(x, mid, 10, 0, Math.PI * 2);
+      g.fill();
+    }
+  }
+  // colour: chrome on black enamel
+  const [cc, cg] = makeCanvas(TW, TH);
+  cg.fillStyle = '#0d0d0e';
+  cg.fillRect(0, 0, TW, TH);
+  cg.globalCompositeOperation = 'lighter';
+  cg.filter = 'brightness(0.86)';
+  cg.drawImage(mc, 0, 0);
+  return [cc, mc];
+}
+
 function tex(canvas, srgb, rx = 1, ry = rx) {
   const t = new THREE.CanvasTexture(canvas);
   t.wrapS = t.wrapT = THREE.RepeatWrapping;
   t.repeat.set(rx, ry);
-  t.anisotropy = 8;
+  t.anisotropy = 16;
   t.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace;
   return t;
 }
@@ -120,30 +174,33 @@ function build() {
   const brushed = brushedCanvas();
   const [knurl, knurlH] = knurlCanvases();
 
-  const body = new THREE.MeshStandardMaterial({
-    color: '#b4b4b0',
-    metalness: 0.8,
-    roughness: 0.56,
-    map: tex(pebble, true, 0.34),
-    bumpMap: tex(pebble, false, 0.34),
-    bumpScale: 0.35,
+  // black leatherette body, black enamel trim, polished chrome details
+  const body = new THREE.MeshPhysicalMaterial({
+    color: '#151516',
+    metalness: 0,
+    roughness: 0.7,
+    specularIntensity: 0.28, // leather barely shines: keep it black under the key light
+    envMapIntensity: 0.5,
+    map: tex(pebble, true, 0.2),
+    bumpMap: tex(pebble, false, 0.2),
+    bumpScale: 0.6,
   });
-  const steel = new THREE.MeshStandardMaterial({ color: '#c0c0bc', metalness: 1, roughness: 0.28 });
-  const bezel = new THREE.MeshStandardMaterial({ color: '#a4a4a0', metalness: 1, roughness: 0.34 });
-  const lip = new THREE.MeshStandardMaterial({ color: '#8a8a87', metalness: 1, roughness: 0.42 });
-  const darkSteel = new THREE.MeshStandardMaterial({ color: '#7a7a77', metalness: 1, roughness: 0.32 });
+  const steel = new THREE.MeshStandardMaterial({ color: '#e2e2de', metalness: 1, roughness: 0.16 });
+  const bezel = new THREE.MeshStandardMaterial({ color: '#0c0c0d', metalness: 0.5, roughness: 0.2 });
+  const lip = new THREE.MeshStandardMaterial({ color: '#a9a9a6', metalness: 1, roughness: 0.3 });
+  const darkSteel = new THREE.MeshStandardMaterial({ color: '#1a1a1c', metalness: 0.8, roughness: 0.28 });
   const plate = new THREE.MeshStandardMaterial({
-    color: '#b9b9b5',
-    metalness: 0.95,
-    roughness: 0.34,
+    color: '#3c3c3e',
+    metalness: 0.9,
+    roughness: 0.3,
     map: tex(brushed, true, 0.6),
     roughnessMap: tex(brushed, false, 0.6),
   });
   const knurlMat = (rx, ry) =>
     new THREE.MeshStandardMaterial({
-      color: '#b0b0ac',
+      color: '#9a9a98',
       metalness: 1,
-      roughness: 0.36,
+      roughness: 0.26,
       map: tex(knurl, true, rx, ry),
       bumpMap: tex(knurlH, false, rx, ry),
       bumpScale: 1.2,
@@ -162,7 +219,21 @@ function build() {
   const interiorBack = new THREE.MeshStandardMaterial({ color: '#1f1f21', metalness: 0.75, roughness: 0.5, map: tex(brushed, true, 0.5) });
   const hidden = new THREE.MeshBasicMaterial({ visible: false });
 
-  return { body, steel, bezel, lip, darkSteel, plate, knurlMat, dark, cavity, anodized, barrel, interior, interiorBack, hidden };
+  const [borderC, borderM] = borderCanvases();
+  const borderMat = (rx) =>
+    new THREE.MeshStandardMaterial({
+      color: '#ffffff',
+      metalness: 1,
+      roughness: 0.3,
+      map: tex(borderC, true, rx, 1),
+      metalnessMap: tex(borderM, false, rx, 1), // enamel ~0, chrome 1
+      bumpMap: tex(borderM, false, rx, 1),
+      bumpScale: 1.4,
+      polygonOffset: true,
+      polygonOffsetFactor: -2,
+    });
+
+  return { borderMat, body, steel, bezel, lip, darkSteel, plate, knurlMat, dark, cavity, anodized, barrel, interior, interiorBack, hidden };
 }
 
 let cache = null;

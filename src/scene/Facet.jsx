@@ -27,6 +27,7 @@ const fragmentShader = /* glsl */ `
   uniform vec4 uSim;     // uniform-scale fit: centre u, u per unit, v per unit, outer v
   uniform float uSimC;   // lateral centre of the facet (layout units)
   uniform float uLift;
+  uniform vec2 uTexel;   // 1 / texture size
   varying vec3 vPos;
 
   void main() {
@@ -51,7 +52,16 @@ const fragmentShader = /* glsl */ `
       float v = uSim.w + abs(along - uWinEdge) * uSim.z;
       uv = vec2(uSim.x + (lat - uSimC) * uSim.y, 1.0 - v);
     }
+    // unsharp mask: crisper detail than plain bilinear upscaling
     vec3 col = texture2D(uMap, uv).rgb;
+    vec2 o = uTexel * 0.75;
+    vec3 blur = (texture2D(uMap, uv + vec2(o.x, 0.0)).rgb + texture2D(uMap, uv - vec2(o.x, 0.0)).rgb
+               + texture2D(uMap, uv + vec2(0.0, o.y)).rgb + texture2D(uMap, uv - vec2(0.0, o.y)).rgb) * 0.25;
+    col = clamp(col + (col - blur) * 0.9, 0.0, 1.0);
+    // a touch more colour and contrast
+    float luma = dot(col, vec3(0.2126, 0.7152, 0.0722));
+    col = mix(vec3(luma), col, 1.12);
+    col = clamp((col - 0.5) * 1.06 + 0.5, 0.0, 1.0);
 
     // soft inner shadows from the seams, the rim and the gate — they lift
     // away as the panel leaves its slot
@@ -114,6 +124,7 @@ export default function Facet({ photo, texture, L }) {
           uSim: { value: new THREE.Vector4() },
           uSimC: { value: 0 },
           uLift: { value: 0 },
+          uTexel: { value: new THREE.Vector2() },
         },
       }),
     [],
@@ -124,6 +135,7 @@ export default function Facet({ photo, texture, L }) {
     const u = material.uniforms;
     const fit = fitPhoto(photo, f, texture.image);
     u.uMap.value = texture;
+    u.uTexel.value.set(1 / texture.image.width, 1 / texture.image.height);
     u.uMode.value = fit.mode;
     u.uAxis.value = f.axis;
     u.uGateEdge.value = f.gateEdge;

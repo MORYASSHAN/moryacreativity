@@ -16,7 +16,7 @@ export function computeLayout(aspect) {
   const H = VIEW_H;
   const W = H * aspect;
   const u = Math.max(Math.min(aspect, 1), 0.55);
-  const m = { side: 0.24 * u, bottom: 0.46 * u, top: 0.64 * u };
+  const m = { side: 0.34 * u, bottom: 0.48 * u, top: 0.66 * u };
   const win = { l: -W / 2 + m.side, r: W / 2 - m.side, b: -H / 2 + m.bottom, t: H / 2 - m.top };
   const winW = win.r - win.l;
   const winH = win.t - win.b;

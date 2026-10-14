@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { useFrame, useLoader, useThree } from '@react-three/fiber';
-import { Bloom, EffectComposer, Noise, Vignette } from '@react-three/postprocessing';
+import { Bloom, BrightnessContrast, EffectComposer, HueSaturation, Noise, Vignette } from '@react-three/postprocessing';
 import { BlendFunction } from 'postprocessing';
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
@@ -12,7 +12,7 @@ import Gate from './Gate.jsx';
 import Galaxy from './Galaxy.jsx';
 import Constellation from './Constellation.jsx';
 import { G, direction } from '../galaxy.js';
-import { Body, Dials, Interior, Seams } from './Body.jsx';
+import { Body, Border, Dials, Interior, Seams } from './Body.jsx';
 
 function Environment() {
   const gl = useThree((s) => s.gl);
@@ -21,7 +21,7 @@ function Environment() {
     const pmrem = new THREE.PMREMGenerator(gl);
     const rt = pmrem.fromScene(new RoomEnvironment(), 0.035);
     scene.environment = rt.texture;
-    scene.environmentIntensity = 0.55;
+    scene.environmentIntensity = 0.75;
     pmrem.dispose();
     return () => {
       scene.environment = null;
@@ -111,16 +111,20 @@ function Lights() {
 // and each keeps its own rung, so a heavy stretch of the dive never leaves the
 // cards blurry.
 const composerRef = { current: null };
-const HI_DPR = Math.min(typeof devicePixelRatio === 'number' ? devicePixelRatio : 1, 1.5);
+// Full device resolution (up to 2x, e.g. retina / 4K screens) on the top rung.
+// On 1x screens the top rung supersamples at 1.5x for extra crispness.
+const HI_DPR = Math.max(1.5, Math.min(typeof devicePixelRatio === 'number' ? devicePixelRatio : 1, 2));
+const MID_DPR = 1.25;
 const LADDERS = [
-  // [pixel ratio, MSAA samples], cheapest first; both phases start on [1, 4] (index 4)
-  [[0.6, 0], [0.7, 0], [0.85, 0], [0.85, 4], [1, 4]], // dive
-  [[0.6, 0], [0.75, 0], [0.9, 0], [1, 0], [1, 4], [HI_DPR, 4]], // galaxy
+  // [pixel ratio, MSAA samples], cheapest first; both phases start on the top rung
+  [[0.6, 0], [0.7, 0], [0.85, 0], [0.85, 4], [1, 4], [MID_DPR, 4], [HI_DPR, 4]], // dive
+  [[0.6, 0], [0.75, 0], [0.9, 0], [1, 0], [1, 4], [MID_DPR, 4], [HI_DPR, 4]], // galaxy
 ];
+const TOP = LADDERS[0].length - 1;
 const GALAXY_AT = TIMELINE.space[1] - 0.03; // the camera has all but stopped here
 
 function AdaptiveQuality() {
-  const st = useMemo(() => ({ level: [4, 4], ups: [2, 2], phase: 0, sum: 0, n: 0, slow: 0, fast: 0, skip: 6 }), []);
+  const st = useMemo(() => ({ level: [TOP, TOP], ups: [2, 2], phase: 0, sum: 0, n: 0, slow: 0, fast: 0, skip: 6 }), []);
   useFrame((state, delta) => {
     const phase = anim.p >= GALAXY_AT ? 1 : 0;
     if (phase !== st.phase) {
@@ -159,9 +163,11 @@ function AdaptiveQuality() {
 function Effects() {
   return (
     <EffectComposer ref={composerRef} multisampling={4}>
-      <Bloom mipmapBlur intensity={0.5} luminanceThreshold={0.78} luminanceSmoothing={0.2} radius={0.7} />
-      <Noise blendFunction={BlendFunction.SOFT_LIGHT} opacity={0.16} />
-      <Vignette offset={0.3} darkness={0.6} />
+      <Bloom mipmapBlur intensity={0.55} luminanceThreshold={0.8} luminanceSmoothing={0.18} radius={0.65} />
+      <BrightnessContrast brightness={0.02} contrast={0.12} />
+      <HueSaturation saturation={0.16} />
+      <Noise blendFunction={BlendFunction.SOFT_LIGHT} opacity={0.035} />
+      <Vignette offset={0.38} darkness={0.42} />
     </EffectComposer>
   );
 }
@@ -178,7 +184,7 @@ export default function Scene() {
   useMemo(() => {
     for (const t of textures) {
       t.colorSpace = THREE.SRGBColorSpace;
-      t.anisotropy = 8;
+      t.anisotropy = 16;
       t.wrapS = t.wrapT = THREE.ClampToEdgeWrapping;
     }
   }, [textures]);
@@ -199,6 +205,7 @@ export default function Scene() {
       <Lights />
       <CameraDive L={L} />
       <Body L={L} />
+      <Border L={L} />
       <Dials L={L} />
       <Interior L={L} />
       {PHOTOS.map((p) => (

@@ -3,7 +3,7 @@ import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { DEPTH, GATE_SCALE, TIMELINE } from '../layout.js';
 import { anim, easeInOut, range } from '../state.js';
-import { getMaterials, roundedRect } from './materials.js';
+import { BORDER_ASPECT, getMaterials, roundedRect } from './materials.js';
 
 // The camera back plate: a pebbled metal slab with the window cut out of it,
 // a raised centre section and the stepped top edge the dials peek over.
@@ -41,6 +41,44 @@ export function Body({ L }) {
 
   // front face ends up at z ≈ 0.16, just proud of the photo panels' outer edge
   return <mesh geometry={geometry} material={M.body} position={[0, 0, -0.2]} />;
+}
+
+// Engraved guilloché band framing the window, mitred at the corners like a
+// picture frame. Each side is a trapezoid whose u runs along the edge in
+// tile lengths and whose v runs from the inner to the outer edge.
+export function Border({ L }) {
+  const M = getMaterials();
+  const { geometry, material } = useMemo(() => {
+    const { win, u } = L;
+    const g0 = 0.075 * u, w = 0.17 * u;
+    const g1 = g0 + w;
+    const tile = w * BORDER_ASPECT;
+    const pos = [], uv = [], idx = [];
+    // inner corners [x, y] and the outward direction of each corner
+    const inn = [[win.l - g0, win.t + g0], [win.r + g0, win.t + g0], [win.r + g0, win.b - g0], [win.l - g0, win.b - g0]];
+    const out = [[win.l - g1, win.t + g1], [win.r + g1, win.t + g1], [win.r + g1, win.b - g1], [win.l - g1, win.b - g1]];
+    for (let i = 0; i < 4; i++) {
+      const j = (i + 1) % 4;
+      const len = Math.hypot(out[j][0] - out[i][0], out[j][1] - out[i][1]);
+      // centre the pattern on each side; the mitre trims the ends
+      const u0 = -len / 2 / tile, u1 = len / 2 / tile, d = w / tile;
+      const n = pos.length / 3;
+      pos.push(out[i][0], out[i][1], 0, out[j][0], out[j][1], 0, inn[j][0], inn[j][1], 0, inn[i][0], inn[i][1], 0);
+      uv.push(u0, 1, u1, 1, u1 - d, 0, u0 + d, 0);
+      idx.push(n, n + 2, n + 1, n, n + 3, n + 2);
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    geo.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+    geo.setIndex(idx);
+    geo.computeVertexNormals();
+    return { geometry: geo, material: M.borderMat(1) };
+  }, [L, M]);
+  useEffect(() => () => {
+    geometry.dispose();
+    material.dispose();
+  }, [geometry, material]);
+  return <mesh geometry={geometry} material={material} position={[0, 0, 0.162]} />;
 }
 
 // The dark chamber behind the photos, revealed once they fly away.
