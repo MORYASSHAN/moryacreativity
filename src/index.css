@@ -24,6 +24,14 @@ body {
   overscroll-behavior-y: none;
 }
 
+/* the page still scrolls (it drives the dive), but no scrollbar is drawn over the frame */
+html {
+  scrollbar-width: none;
+}
+html::-webkit-scrollbar {
+  display: none;
+}
+
 /* the 3D stage is pinned; the page scrolls underneath it */
 .stage {
   position: fixed !important;
@@ -256,47 +264,47 @@ html.is-locked body {
   }
 }
 
-/* ---------- scroll cue ---------- */
+/* ---------- scroll cue: a small mouse, its wheel rolling down ---------- */
 .scroll-cue {
   position: absolute;
   left: 50%;
-  bottom: max(18px, env(safe-area-inset-bottom));
-  transform: translate(-50%, 8px);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  font-size: 10px;
-  letter-spacing: 0.32em;
-  text-transform: uppercase;
-  color: var(--ink);
-  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.7);
+  bottom: calc(6.5vh + max(6px, env(safe-area-inset-bottom)));
+  transform: translate(-50%, 6px);
+  width: 16px;
+  height: 25px;
+  border: 1.5px solid rgba(242, 239, 233, 0.75);
+  border-radius: 9px;
+  filter: drop-shadow(0 1px 6px rgba(0, 0, 0, 0.7));
   opacity: 0;
   transition: opacity 0.6s ease, transform 0.6s ease;
 }
 .scroll-cue.is-on {
-  opacity: 0.85;
+  opacity: 0.7;
   transform: translate(-50%, 0);
   transition-delay: 1.8s;
 }
 .scroll-cue i {
-  width: 1px;
-  height: 28px;
-  background: linear-gradient(var(--ink), transparent);
-  transform-origin: top;
+  position: absolute;
+  left: 50%;
+  top: 5px;
+  width: 2px;
+  height: 5px;
+  margin-left: -1px;
+  border-radius: 1px;
+  background: var(--ink);
   animation: cue 1.8s cubic-bezier(0.6, 0, 0.3, 1) infinite;
 }
 @keyframes cue {
   0% {
-    transform: scaleY(0);
+    transform: translateY(0);
     opacity: 1;
   }
-  60% {
-    transform: scaleY(1);
-    opacity: 1;
+  70% {
+    transform: translateY(8px);
+    opacity: 0;
   }
   100% {
-    transform: scaleY(1);
+    transform: translateY(0);
     opacity: 0;
   }
 }

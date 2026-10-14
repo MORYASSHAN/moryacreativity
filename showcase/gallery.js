@@ -26,7 +26,7 @@ stairWords.forEach((w, i) => {
   const t = i / (stairWords.length - 1);
   s.textContent = w;
   s.style.left = `${t * 78 + (i % 2 ? 2 : 0)}%`;
-  s.style.top = `${t * 100 + Math.sin(i * 1.7) * 6}px`;
+  s.style.top = `${t * 126}px`; // one clear step per word, so neighbours never overlap
   s.style.animationDelay = `${0.25 + i * 0.16}s`;
   stair.append(s);
 });

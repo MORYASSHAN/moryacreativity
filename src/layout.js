@@ -16,7 +16,8 @@ export function computeLayout(aspect) {
   const H = VIEW_H;
   const W = H * aspect;
   const u = Math.max(Math.min(aspect, 1), 0.55);
-  const m = { side: 0.34 * u, bottom: 0.48 * u, top: 0.66 * u };
+  // one even margin all round: it holds the floral frame band (see FrameBorder)
+  const m = { side: 0.52 * u, bottom: 0.52 * u, top: 0.52 * u };
   const win = { l: -W / 2 + m.side, r: W / 2 - m.side, b: -H / 2 + m.bottom, t: H / 2 - m.top };
   const winW = win.r - win.l;
   const winH = win.t - win.b;
@@ -26,7 +27,7 @@ export function computeLayout(aspect) {
   const gh = Math.min(0.434 * winH, (0.46 * winW) / 1.08);
   const gw = gh * 1.08;
   const gate = { l: cx - gw / 2, r: cx + gw / 2, b: cy - gh / 2, t: cy + gh / 2 };
-  return { W, H, u, m, win, winW, winH, gate, gw, gh, cx, cy, yTop: H / 2 - 0.2 * u, radius: 0.22 * u };
+  return { W, H, u, m, win, winW, winH, gate, gw, gh, cx, cy, radius: 0.22 * u };
 }
 
 // Geometry of one sloped photo panel ("facet") between the window rim and the gate.

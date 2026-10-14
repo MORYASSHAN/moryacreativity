@@ -12,7 +12,7 @@ import Gate from './Gate.jsx';
 import Galaxy from './Galaxy.jsx';
 import Constellation from './Constellation.jsx';
 import { G, direction } from '../galaxy.js';
-import { Body, Border, Dials, Interior, Seams } from './Body.jsx';
+import { Body, FrameBorder, Interior, Seams } from './Body.jsx';
 
 function Environment() {
   const gl = useThree((s) => s.gl);
@@ -205,8 +205,7 @@ export default function Scene() {
       <Lights />
       <CameraDive L={L} />
       <Body L={L} />
-      <Border L={L} />
-      <Dials L={L} />
+      <FrameBorder L={L} />
       <Interior L={L} />
       {PHOTOS.map((p) => (
         <Facet key={p.id} photo={p} texture={textures[PHOTOS.indexOf(p)]} L={L} />

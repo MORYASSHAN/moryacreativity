@@ -75,7 +75,6 @@ export default function Overlay() {
       <SoundToggle />
       <GalaxyUI />
       <div className={`scroll-cue ${ready && !scrolled ? 'is-on' : ''}`} aria-hidden="true">
-        <span>Scroll</span>
         <i />
       </div>
     </div>

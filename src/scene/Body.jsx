@@ -3,29 +3,14 @@ import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { DEPTH, GATE_SCALE, TIMELINE } from '../layout.js';
 import { anim, easeInOut, range } from '../state.js';
-import { BORDER_ASPECT, getMaterials, roundedRect } from './materials.js';
+import { FRAME_ASPECT, getMaterials, roundedRect } from './materials.js';
 
-// The camera back plate: a pebbled metal slab with the window cut out of it,
-// a raised centre section and the stepped top edge the dials peek over.
+// The camera back plate: a pebbled metal slab with the window cut out of it.
 export function Body({ L }) {
   const M = getMaterials();
   const geometry = useMemo(() => {
-    const { W, H, u, yTop, win, radius } = L;
-    const X = W / 2 + 3, Y = H / 2 + 3;
-    const xr = 0.215 * W;
-    const rr = 0.16 * u;
-    const s = new THREE.Shape();
-    s.moveTo(-X, -Y);
-    s.lineTo(X, -Y);
-    s.lineTo(X, yTop);
-    s.lineTo(xr + rr, yTop);
-    s.quadraticCurveTo(xr, yTop, xr, yTop + rr);
-    s.lineTo(xr, Y);
-    s.lineTo(-xr, Y);
-    s.lineTo(-xr, yTop + rr);
-    s.quadraticCurveTo(-xr, yTop, -xr - rr, yTop);
-    s.lineTo(-X, yTop);
-    s.closePath();
+    const { W, H, win, radius } = L;
+    const s = roundedRect(new THREE.Shape(), 0, 0, W + 6, H + 6, 0);
     const e = 0.02;
     s.holes.push(roundedRect(new THREE.Path(), (win.l + win.r) / 2, (win.b + win.t) / 2, L.winW + 2 * e, L.winH + 2 * e, radius));
     return new THREE.ExtrudeGeometry(s, {
@@ -43,42 +28,91 @@ export function Body({ L }) {
   return <mesh geometry={geometry} material={M.body} position={[0, 0, -0.2]} />;
 }
 
-// Engraved guilloché band framing the window, mitred at the corners like a
-// picture frame. Each side is a trapezoid whose u runs along the edge in
-// tile lengths and whose v runs from the inner to the outer edge.
-export function Border({ L }) {
+// The floral frame band around the window: four sides, each a whole number of
+// pattern tiles long, and a square rosette block at each corner, so the band
+// is identical on every edge. The inlay glows violet around the cursor.
+const pointer = { x: 0, y: 0, seen: false };
+if (typeof window !== 'undefined') {
+  window.addEventListener('pointermove', (e) => {
+    pointer.x = (e.clientX / innerWidth) * 2 - 1;
+    pointer.y = -(e.clientY / innerHeight) * 2 + 1;
+    pointer.seen = e.pointerType === 'mouse';
+  }, { passive: true });
+  document.addEventListener('pointerleave', () => { pointer.seen = false; });
+}
+const ray = new THREE.Raycaster();
+const ndc = new THREE.Vector2();
+
+export function FrameBorder({ L }) {
   const M = getMaterials();
-  const { geometry, material } = useMemo(() => {
+  const mesh = useRef();
+  const { geometry, materials } = useMemo(() => {
     const { win, u } = L;
-    const g0 = 0.075 * u, w = 0.17 * u;
+    const g0 = 0.05 * u, w = 0.44 * u; // fills the margin, so no bare strip shows outside it
     const g1 = g0 + w;
-    const tile = w * BORDER_ASPECT;
+    const tile = w * FRAME_ASPECT;
     const pos = [], uv = [], idx = [];
-    // inner corners [x, y] and the outward direction of each corner
-    const inn = [[win.l - g0, win.t + g0], [win.r + g0, win.t + g0], [win.r + g0, win.b - g0], [win.l - g0, win.b - g0]];
-    const out = [[win.l - g1, win.t + g1], [win.r + g1, win.t + g1], [win.r + g1, win.b - g1], [win.l - g1, win.b - g1]];
-    for (let i = 0; i < 4; i++) {
-      const j = (i + 1) % 4;
-      const len = Math.hypot(out[j][0] - out[i][0], out[j][1] - out[i][1]);
-      // centre the pattern on each side; the mitre trims the ends
-      const u0 = -len / 2 / tile, u1 = len / 2 / tile, d = w / tile;
+    // a quad from [x, y, u, v] corners, wound to face the camera
+    const quad = (pts) => {
       const n = pos.length / 3;
-      pos.push(out[i][0], out[i][1], 0, out[j][0], out[j][1], 0, inn[j][0], inn[j][1], 0, inn[i][0], inn[i][1], 0);
-      uv.push(u0, 1, u1, 1, u1 - d, 0, u0 + d, 0);
-      idx.push(n, n + 2, n + 1, n, n + 3, n + 2);
+      for (const [x, y, s, t] of pts) {
+        pos.push(x, y, 0);
+        uv.push(s, t);
+      }
+      const [a, b, c] = pts;
+      const ccw = (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]) > 0;
+      idx.push(...(ccw ? [n, n + 1, n + 2, n, n + 2, n + 3] : [n, n + 2, n + 1, n, n + 3, n + 2]));
+    };
+    const il = win.l - g0, ir = win.r + g0, ib = win.b - g0, it = win.t + g0;
+    const ol = win.l - g1, or = win.r + g1, ob = win.b - g1, ot = win.t + g1;
+    const reps = (len) => Math.max(1, Math.round(len / tile));
+    const nx = reps(ir - il), ny = reps(it - ib);
+    // sides: u along the edge in tiles, v from the inner (0) to the outer (1) edge
+    quad([[il, it, 0, 0], [ir, it, nx, 0], [ir, ot, nx, 1], [il, ot, 0, 1]]); // top
+    quad([[il, ib, 0, 0], [ir, ib, nx, 0], [ir, ob, nx, 1], [il, ob, 0, 1]]); // bottom
+    quad([[il, ib, 0, 0], [il, it, ny, 0], [ol, it, ny, 1], [ol, ib, 0, 1]]); // left
+    quad([[ir, ib, 0, 0], [ir, it, ny, 0], [or, it, ny, 1], [or, ib, 0, 1]]); // right
+    const sideCount = idx.length;
+    // corner blocks
+    for (const [x0, x1, y0, y1] of [[ol, il, it, ot], [ir, or, it, ot], [ir, or, ob, ib], [ol, il, ob, ib]]) {
+      quad([[x0, y0, 0, 0], [x1, y0, 1, 0], [x1, y1, 1, 1], [x0, y1, 0, 1]]);
     }
     const geo = new THREE.BufferGeometry();
     geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
     geo.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
     geo.setIndex(idx);
+    geo.addGroup(0, sideCount, 0);
+    geo.addGroup(sideCount, idx.length - sideCount, 1);
     geo.computeVertexNormals();
-    return { geometry: geo, material: M.borderMat(1) };
+    M.frameGlow.uRad.value = 1.6 * w;
+    return { geometry: geo, materials: M.frameMats() };
   }, [L, M]);
   useEffect(() => () => {
     geometry.dispose();
-    material.dispose();
-  }, [geometry, material]);
-  return <mesh geometry={geometry} material={material} position={[0, 0, 0.162]} />;
+    materials.forEach((m) => m.dispose());
+  }, [geometry, materials]);
+
+  useFrame(({ camera }, delta) => {
+    const dt = Math.min(delta, 0.1);
+    const glow = M.frameGlow;
+    let target = 0;
+    // only while the frame is in view (before the dive carries the camera past it)
+    if (pointer.seen && mesh.current && anim.p < TIMELINE.fly[1]) {
+      ndc.set(pointer.x, pointer.y);
+      ray.setFromCamera(ndc, camera);
+      const hit = ray.intersectObject(mesh.current, false)[0];
+      if (hit) {
+        target = 1;
+        const p = mesh.current.worldToLocal(hit.point);
+        // the hotspot follows the cursor with a little lag, so the light trails along the vine
+        if (glow.uGlow.value < 0.02) glow.uPointer.value.set(p.x, p.y);
+        else glow.uPointer.value.lerp(p, 1 - Math.exp(-14 * dt));
+      }
+    }
+    glow.uGlow.value = THREE.MathUtils.damp(glow.uGlow.value, target, target ? 9 : 4, dt);
+  });
+
+  return <mesh ref={mesh} geometry={geometry} material={materials} position={[0, 0, 0.162]} />;
 }
 
 // The dark chamber behind the photos, revealed once they fly away.
@@ -161,31 +195,4 @@ export function Seams({ L }) {
       </mesh>
     </group>
   ));
-}
-
-// Knurled shutter-speed and rewind dials peeking over the top edge.
-export function Dials({ L }) {
-  const M = getMaterials();
-  const { W, u, yTop } = L;
-  const rL = Math.min(0.07 * W, 1.3 * u);
-  const rR = Math.min(0.12 * W, 2.1 * u);
-  const h = 0.5 * u;
-  const y = yTop + 0.03 + h / 2;
-  const mats = useMemo(() => {
-    const ring = (r) => M.knurlMat(Math.round((2 * Math.PI * r) / 0.09), 1.5);
-    return { left: [ring(rL), M.steel, M.steel], right: [ring(rR), M.steel, M.steel] };
-  }, [M, rL, rR]);
-  return (
-    <>
-      <mesh position={[-W / 2 + 0.03 * W + rL, y, -rL * 0.55]} material={mats.left}>
-        <cylinderGeometry args={[rL, rL, h, 96]} />
-      </mesh>
-      <mesh position={[W / 2 - 0.03 * W - rR, y, -rR * 0.55]} material={mats.right}>
-        <cylinderGeometry args={[rR, rR, h, 128]} />
-      </mesh>
-      <mesh position={[W / 2 - 0.03 * W - rR, y + h / 2 + 0.08 * u, -rR * 0.55]} material={M.darkSteel}>
-        <cylinderGeometry args={[rR * 0.86, rR * 0.9, 0.16 * u, 96]} />
-      </mesh>
-    </>
-  );
 }
