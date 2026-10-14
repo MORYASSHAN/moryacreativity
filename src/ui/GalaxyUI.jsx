@@ -10,6 +10,7 @@ export default function GalaxyUI() {
   const hot = useAppState((s) => s.hot ?? -1);
   const [shown, setShown] = useState(-1);
   const drag = useRef(null);
+  const tag = useRef(null);
   // keep the last project in the label so it can fade out with its text intact
   if (hot >= 0 && hot !== shown) setShown(hot);
 
@@ -18,6 +19,8 @@ export default function GalaxyUI() {
     G.pointer.y = (e.clientY / innerHeight) * 2 - 1;
     G.pointer.inside = true;
     G.pointer.mouse = e.pointerType === 'mouse';
+    // the "Enter / Visit" tag rides along with the cursor
+    tag.current?.style.setProperty('transform', `translate3d(${e.clientX}px, ${e.clientY}px, 0)`);
   };
 
   const onPointerMove = (e) => {
@@ -80,14 +83,19 @@ export default function GalaxyUI() {
         onPointerLeave={() => { G.pointer.inside = false; }}
         onClick={onClick}
       />
-      <div className={`g-label ${galaxy && hot >= 0 ? 'is-on' : ''}`} aria-hidden={!(galaxy && hot >= 0)}>
+      {/* hovering a card: the field dims, the project is named in the middle */}
+      <div className={`g-label ${galaxy && hot >= 0 ? 'is-on' : ''}`} aria-hidden="true">
         {it && (
-          <a href={it.href} target={it.live ? '_blank' : undefined} rel={it.live ? 'noopener' : undefined} tabIndex={-1}>
+          <>
             <span className="g-kind">{it.live ? 'Live website' : 'Landing page'}</span>
             <span className="g-title">{it.title}</span>
-            <span className="g-open">{it.live ? 'Visit ↗' : 'Enter →'}</span>
-          </a>
+            <span className="g-line">{it.line}</span>
+            <span className="g-tap">Tap again to {it.live ? 'visit ↗' : 'enter →'}</span>
+          </>
         )}
+      </div>
+      <div className={`g-tag ${galaxy && hot >= 0 ? 'is-on' : ''}`} ref={tag} aria-hidden="true">
+        <span>{it ? (it.live ? 'Visit ↗' : 'Enter →') : ''}</span>
       </div>
       {galaxy && (
         <nav className="g-nav" aria-label="Projects">

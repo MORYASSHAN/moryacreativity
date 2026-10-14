@@ -135,33 +135,28 @@ body {
 .g-label {
   position: absolute;
   left: 50%;
-  bottom: max(26px, env(safe-area-inset-bottom));
-  transform: translate(-50%, 10px);
-  width: max-content;
-  max-width: calc(100vw - 32px);
-  padding: 22px 46px 4px;
-  text-align: center;
-  background: radial-gradient(ellipse 60% 70% at 50% 60%, rgba(5, 5, 6, 0.85), rgba(5, 5, 6, 0));
-  opacity: 0;
-  filter: blur(6px);
-  transition: opacity 0.45s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), filter 0.45s ease;
-}
-.g-label.is-on {
-  opacity: 1;
-  transform: translate(-50%, 0);
-  filter: blur(0);
-  pointer-events: auto;
-}
-.g-label a {
+  top: 50%;
+  width: min(680px, calc(100vw - 32px));
+  transform: translate(-50%, calc(-50% + 12px));
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  color: inherit;
-  text-decoration: none;
+  gap: 14px;
+  padding: 48px 24px;
+  text-align: center;
+  background: radial-gradient(ellipse 55% 60% at 50% 50%, rgba(5, 5, 6, 0.7), rgba(5, 5, 6, 0));
+  opacity: 0;
+  filter: blur(8px);
+  transition: opacity 0.5s ease, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1), filter 0.5s ease;
+}
+.g-label.is-on {
+  opacity: 1;
+  transform: translate(-50%, -50%);
+  filter: blur(0);
 }
 .g-kind,
-.g-open {
+.g-tap,
+.g-tag {
   font-size: 10px;
   letter-spacing: 0.32em;
   text-transform: uppercase;
@@ -171,13 +166,55 @@ body {
   font-family: var(--display);
   font-style: italic;
   font-weight: 400;
-  font-size: clamp(30px, 4.2vw, 58px);
+  font-size: clamp(36px, 5.6vw, 78px);
   line-height: 1;
   letter-spacing: 0.01em;
   text-shadow: 0 2px 24px rgba(0, 0, 0, 0.8);
 }
-.g-open {
+.g-line {
+  max-width: 44ch;
+  font-size: 12px;
+  line-height: 1.7;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.9);
+}
+/* phones have no cursor to carry the tag, so the label says what a second tap does */
+.g-tap {
+  display: none;
   color: var(--ink);
+}
+@media (hover: none) {
+  .g-tap {
+    display: block;
+  }
+  .g-tag {
+    display: none;
+  }
+}
+
+/* follows the cursor while a card is hovered */
+.g-tag {
+  position: absolute;
+  left: 0;
+  top: 0;
+  will-change: transform;
+}
+.g-tag span {
+  display: block;
+  margin: 22px 0 0 18px;
+  padding: 7px 12px;
+  color: var(--ink);
+  white-space: nowrap;
+  background: rgba(5, 5, 6, 0.55);
+  border: 1px solid rgba(242, 239, 233, 0.25);
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.g-tag.is-on span {
+  opacity: 1;
+  transform: scale(1);
 }
 
 /* keyboard users get a plain list of the projects */

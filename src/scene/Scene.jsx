@@ -56,7 +56,7 @@ function divePath(L, lens) {
 }
 
 // Camera stays perfectly still until the dive, then glides down the lens axis.
-// Once it has come to rest in the galaxy, the project field steers where it looks.
+// Once it has come to rest in the galaxy, the cursor tilts where it looks.
 function CameraDive({ L }) {
   const lens = useMemo(() => lensWorld(L), [L]);
   const look = useMemo(() => new THREE.Vector3(), []);
@@ -75,7 +75,8 @@ function CameraDive({ L }) {
     const z = CAM_Z + (gateFillZ - CAM_Z) * q1 + (lens.end - gateFillZ) * q2 - coast * q3;
     const aim = q1;
     camera.position.set(lens.x * aim, lens.y * aim, z);
-    direction(G.yaw, G.pitch, look).multiplyScalar(10).add(camera.position);
+    // the camera only tilts; turning left/right spins the ring of cards and stars instead
+    direction(0, G.pitch, look).multiplyScalar(10).add(camera.position);
     camera.lookAt(look);
     const fov = FOV + 14 * easeInOut(range(anim.p, flyEnd, b));
     if (Math.abs(camera.fov - fov) > 1e-3) {

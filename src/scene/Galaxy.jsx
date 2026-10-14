@@ -3,6 +3,7 @@ import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { lensWorld } from '../layout.js';
 import { anim } from '../state.js';
+import { DEG, G, PERIOD } from '../galaxy.js';
 
 // ---------------------------------------------------------------------------
 // The dark galaxy beyond the far end of the lens: nothing but stars, drifting
@@ -19,8 +20,9 @@ const SPIN = 0.006; // radians per second
 const vertexShader = /* glsl */ `
   attribute vec3 aColor;
   attribute float aSize, aSeed;
-  uniform float uTime, uDrift, uSpin, uOrigin, uCamZ, uPixel;
+  uniform float uTime, uDrift, uSpin, uOrigin, uCamZ, uPixel, uYaw;
   uniform vec2 uAxis;
+  uniform vec3 uCam;
   varying vec3 vColor;
   varying float vAlpha, vSpike;
   const float DEPTH = ${DEPTH.toFixed(1)};
@@ -31,7 +33,13 @@ const vertexShader = /* glsl */ `
     float rel = mod(position.z + uTime * uDrift - cz, DEPTH) - DEPTH;
     float a = uTime * uSpin;
     vec2 xy = mat2(cos(a), sin(a), -sin(a), cos(a)) * position.xy;
-    vec4 mv = viewMatrix * vec4(uAxis + xy, uOrigin + cz + rel, 1.0);
+    vec3 p = vec3(uAxis + xy, uOrigin + cz + rel);
+    // turning in the galaxy spins the sky about the camera, wrapping every half
+    // turn exactly like the ring of cards (stars are only ever in front of it)
+    vec3 d = p - uCam;
+    float phi = mod(atan(d.x, -d.z) - uYaw + 1.5707963, 3.1415927) - 1.5707963;
+    float rho = length(d.xz);
+    vec4 mv = viewMatrix * vec4(uCam + vec3(rho * sin(phi), d.y, -rho * cos(phi)), 1.0);
     float dist = max(-mv.z, 0.05);
     gl_Position = projectionMatrix * mv;
 
@@ -140,6 +148,8 @@ export default function Galaxy({ L }) {
           uSpin: { value: SPIN },
           uOrigin: { value: 0 },
           uCamZ: { value: 0 },
+          uYaw: { value: 0 },
+          uCam: { value: new THREE.Vector3() },
           uPixel: { value: 1 },
           uAxis: { value: new THREE.Vector2() },
         },
@@ -153,6 +163,8 @@ export default function Galaxy({ L }) {
     u.uTime.value = anim.reduced ? 0 : clock.elapsedTime;
     u.uOrigin.value = lens.end;
     u.uCamZ.value = camera.position.z;
+    u.uCam.value.copy(camera.position);
+    u.uYaw.value = (G.yaw - PERIOD * Math.floor(G.yaw / PERIOD)) * DEG; // the sky repeats every PERIOD
     u.uPixel.value = dpr;
     u.uAxis.value.set(lens.x, lens.y);
   });

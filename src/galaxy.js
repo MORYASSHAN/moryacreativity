@@ -13,25 +13,30 @@ export const ITEMS = PROJECTS.map((p) => ({
   slug: p.slug,
   title: p.title,
   live: p.kind === 'live',
+  line: p.line,
   href: p.kind === 'live' ? p.url : `${base}showcase/concepts/${p.slug}/`,
   texture: `${base}galaxy/${p.slug}.webp`,
 }));
 
-// Angles are in degrees. Cards are scattered over the band yaw -SPAN..SPAN,
-// pitch -TOP..TOP: big ones first, then smaller ones fill the gaps. A card is
-// only placed where its rectangle (plus a GAP margin) is clear of every other,
-// so no two cards ever overlap.
-export const SPAN = 100;
-export const TOP = 40;
-const GAP = 2.4;
+// Angles are in degrees. The field is an endless ring: card yaws live in
+// -PERIOD/2..PERIOD/2 and wrap around, so turning never reaches an end (the
+// wrap happens well outside the view). Pitch stays inside -TOP..TOP. Every
+// project appears exactly twice: once large and near, once smaller and further
+// away, about half a turn apart. A card is only placed where its rectangle
+// (plus a GAP margin) is clear of every other, so no two cards ever overlap.
+export const PERIOD = 180;
+export const TOP = 34;
+const GAP = 3;
 const TEX_ASPECT = 1.6; // every texture is 1280x800
 const ASPECTS = [1.6, 1.33, 1.78, 1.2, 1.5, 1.9, 1.0, 0.8];
-// [count, smallest height, largest height] — sizes from near to far
+// near and far copy of each project: [smallest height, largest height, distance]
 const TIERS = [
-  [11, 12.5, 16], // one large card per project
-  [16, 9, 12],
-  [22, 5.5, 8],
+  [13, 17, 9.5],
+  [8, 11, 12],
 ];
+
+// signed angle folded into -PERIOD/2..PERIOD/2
+export const wrapYaw = (a) => a - PERIOD * Math.round(a / PERIOD);
 
 function rng(seed) {
   return () => {
@@ -42,26 +47,39 @@ function rng(seed) {
 
 export function buildCards() {
   const R = rng(4242);
+  const n = ITEMS.length;
+  // shuffled so neighbouring cards belong to different projects
+  const order = ITEMS.map((_, i) => i);
+  for (let i = n - 1; i > 0; i--) {
+    const j = Math.floor(R() * (i + 1));
+    [order[i], order[j]] = [order[j], order[i]];
+  }
+
   const cards = [];
-  const boxes = [];
-  const clear = (b) =>
-    boxes.every((o) => b.y0 >= o.y1 + GAP || b.y1 <= o.y0 - GAP || b.x0 >= o.x1 + GAP || b.x1 <= o.x0 - GAP);
-  let k = 0;
-  TIERS.forEach(([count, hMin, hMax], tier) => {
-    for (let n = 0, tries = 0; n < count && tries < 900; tries++) {
-      const h = hMin + R() * (hMax - hMin);
+  const clear = (c) =>
+    cards.every(
+      (o) =>
+        Math.abs(wrapYaw(c.yaw - o.yaw)) >= (c.w + o.w) / 2 + GAP ||
+        Math.abs(c.pitch - o.pitch) >= (c.h + o.h) / 2 + GAP,
+    );
+
+  // search outwards from a target spot, shrinking the card a little if it's crowded
+  const place = (item, tier, yaw0, up) => {
+    const [hMin, hMax, dist] = TIERS[tier];
+    for (let tries = 0; tries < 2000; tries++) {
+      const t = tries / 2000;
+      const h = (hMin + R() * (hMax - hMin)) * (1 - 0.3 * t);
       const aspect = ASPECTS[Math.floor(R() * ASPECTS.length)];
-      const pitch = (R() * 2 - 1) * (TOP - h / 2);
+      const room = TOP - h / 2;
+      // prefer the requested half (above / below the horizon), then anywhere
+      const pitch = t < 0.5 ? (up ? 1 : -1) * (2 + R() * (room - 2)) : (R() * 2 - 1) * room;
       // a card's yaw extent widens away from the horizon
       const stretch = 1 / Math.cos((Math.abs(pitch) + h / 2) * (Math.PI / 180));
-      const w = h * aspect * stretch;
-      const yaw = (R() * 2 - 1) * (SPAN - w / 2);
-      const box = { x0: yaw - w / 2, x1: yaw + w / 2, y0: pitch - h / 2, y1: pitch + h / 2 };
-      if (!clear(box)) continue;
-      boxes.push(box);
-      n++;
+      const yaw = wrapYaw(yaw0 + (R() * 2 - 1) * (4 + 80 * t));
+      const c = { yaw, pitch, h, w: h * aspect * stretch, aspect };
+      if (!clear(c)) continue;
 
-      // each instance shows a different crop of its project's screenshot
+      // each copy shows a different crop of its project's screenshot
       const rep = [1, 1];
       const off = [0, 0];
       if (aspect < TEX_ASPECT) {
@@ -71,22 +89,19 @@ export function buildCards() {
         rep[1] = TEX_ASPECT / aspect;
         off[1] = (1 - rep[1]) * (0.35 + 0.65 * R()); // stay near the top of the page
       }
-      cards.push({
-        item: (k++ * 4) % ITEMS.length,
-        yaw,
-        pitch,
-        h,
-        aspect,
-        tier,
-        dist: [9.5, 11, 12.5][tier] + R() * 0.8,
-        rep,
-        off,
-        bob: R() * Math.PI * 2,
-      });
+      cards.push({ ...c, item, tier, dist: dist + R() * 0.8, rep, off, bob: R() * Math.PI * 2 });
+      return cards[cards.length - 1];
     }
+    return null;
+  };
+
+  // near copies: evenly round the ring, alternating above and below the horizon
+  const near = order.map((item, i) => place(item, 0, -PERIOD / 2 + ((i + 0.5) * PERIOD) / n, i % 2 === 0));
+  // far copies: half a turn from their twin, on the other side of the horizon
+  order.forEach((item, i) => {
+    const twin = near[i];
+    place(item, 1, (twin ? twin.yaw : 0) + PERIOD / 2, twin ? twin.pitch < 0 : i % 2 === 1);
   });
-  // cards nearest the centre of view arrive first
-  for (const c of cards) c.delay = Math.min(Math.hypot(c.yaw, c.pitch * 1.4) / SPAN, 1) * 0.55;
   return cards;
 }
 
@@ -131,5 +146,5 @@ export function pick(clientX, clientY) {
   ndc.set((clientX / innerWidth) * 2 - 1, -((clientY / innerHeight) * 2 - 1));
   raycaster.setFromCamera(ndc, G.camera);
   const hit = raycaster.intersectObjects(G.meshes, false)[0];
-  return hit && hit.object.userData.op > 0.6 ? G.meshes.indexOf(hit.object) : -1;
+  return hit ? G.meshes.indexOf(hit.object) : -1;
 }

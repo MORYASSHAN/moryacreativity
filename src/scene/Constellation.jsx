@@ -1,61 +1,58 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { useFrame, useThree } from '@react-three/fiber';
+import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { TIMELINE } from '../layout.js';
-import { anim, clamp01, easeOut, range, setState } from '../state.js';
-import { DEG, G, ITEMS, SPAN, TOP, buildCards, direction, ndc, raycaster } from '../galaxy.js';
+import { anim, clamp01, range, setState } from '../state.js';
+import { DEG, G, ITEMS, PERIOD, TOP, buildCards, direction, ndc, raycaster, wrapYaw } from '../galaxy.js';
 
 const geometry = new THREE.PlaneGeometry(1, 1);
 const damp = THREE.MathUtils.damp;
-const REST_LIGHT = [0.92, 0.7, 0.48]; // by size tier, near to far
-const REST_BLUR = [0, 1.1, 2.3]; // texture LOD bias, near to far
+const REST_LIGHT = [0.92, 0.6]; // near copy, far copy
+const REST_BLUR = [0, 1.6]; // texture LOD bias, near to far
+const SPEED = 42; // fastest turn, degrees / second
+const DEAD = 0.12; // cursor dead zone around the centre (NDC)
 
-// Steers the view: velocity grows as the cursor nears an edge (dead zone in the middle),
-// holds while a card is hovered, and is clamped so the outermost cards stay reachable.
-function steer(dt, camera, size) {
-  const vfov = camera.fov;
-  const hfov = (2 * Math.atan(Math.tan((vfov / 2) * DEG) * (size.width / size.height))) / DEG;
-  G.maxYaw = Math.max(SPAN - hfov / 2 + 3, 0);
-  G.maxPitch = Math.max(TOP - vfov / 2 + 3, 0);
+// Soft response curve for the cursor: nothing in the dead zone, then an
+// S-curve up to full strength at the edge, so turning eases in and out.
+function curve(v) {
+  const x = clamp01((Math.abs(v) - DEAD) / (1 - DEAD));
+  return Math.sign(v) * x * x * (3 - 2 * x);
+}
 
+// Steers the view. The ring of cards turns endlessly (it wraps), with a speed
+// that follows how far the cursor is from the centre; the tilt follows the
+// cursor's height directly and eases to a stop at the top and bottom, so the
+// view never hits a hard wall. A hovered card holds the turn.
+function steer(dt, camera) {
+  G.maxPitch = Math.max(TOP - camera.fov / 2 + 3, 0);
   const p = G.pointer;
   let tYaw = 0;
-  let tPitch = 0;
+  let tPitch = G.pitch;
   if (anim.reduced) {
-    // no motion-driven turning: map the cursor straight onto the view
-    if (p.inside) {
-      G.yaw = damp(G.yaw, p.x * G.maxYaw, 4, dt);
+    // no continuous turning: the cursor position maps straight onto the ring
+    if (p.inside && p.mouse) {
+      G.yaw = damp(G.yaw, (p.x * PERIOD) / 2, 4, dt);
       G.pitch = damp(G.pitch, -p.y * G.maxPitch, 4, dt);
     }
+    G.vYaw = 0;
     return;
   }
   if (p.mouse && p.inside) {
-    const edge = (v) => {
-      const a = Math.abs(v);
-      return a < 0.2 ? 0 : Math.sign(v) * ((a - 0.2) / 0.8) ** 2;
-    };
     // a hovered card holds still, unless the cursor is pushing at the very edge
-    const hold = G.hotCard < 0 ? 1 : Math.max(Math.abs(p.x), Math.abs(p.y)) > 0.8 ? 0.35 : 0;
-    tYaw = edge(p.x) * 48 * hold;
-    tPitch = -edge(p.y) * 30 * hold;
+    const hold = G.hotCard < 0 ? 1 : Math.abs(p.x) > 0.85 ? 0.3 : 0;
+    tYaw = curve(p.x) * SPEED * hold;
+    tPitch = -curve(p.y) * G.maxPitch;
   } else if (!p.mouse && !p.dragging && performance.now() - G.touchedAt > 2500) {
-    // phones: a slow idle drift between the ends
-    if (G.yaw > G.maxYaw - 1) G.drift = -1;
-    if (G.yaw < -G.maxYaw + 1) G.drift = 1;
+    // phones: a slow idle drift round the ring
     tYaw = G.drift * 5;
+    tPitch = 0;
   }
-  if (!p.dragging) {
-    G.vYaw = damp(G.vYaw, tYaw, p.mouse ? 3 : 1.6, dt);
-    G.vPitch = damp(G.vPitch, tPitch, 3, dt);
-  }
+  if (!p.dragging) G.vYaw = damp(G.vYaw, tYaw, p.mouse ? 2.4 : 1.5, dt);
   G.yaw += G.vYaw * dt;
-  G.pitch += G.vPitch * dt;
-  if (Math.abs(G.yaw) > G.maxYaw) { G.yaw = Math.sign(G.yaw) * G.maxYaw; G.vYaw = 0; }
-  if (Math.abs(G.pitch) > G.maxPitch) { G.pitch = Math.sign(G.pitch) * G.maxPitch; G.vPitch = 0; }
+  G.pitch = damp(G.pitch, Math.max(-G.maxPitch, Math.min(G.maxPitch, tPitch)), 2.2, dt);
 }
 
 export default function Constellation({ end }) {
-  const size = useThree((s) => s.size);
   const group = useRef();
   const cards = useMemo(() => buildCards(), []);
 
@@ -76,18 +73,31 @@ export default function Constellation({ end }) {
         const map = textures[c.item].clone();
         map.repeat.set(c.rep[0], c.rep[1]);
         map.offset.set(c.off[0], 1 - c.rep[1] - c.off[1]);
-        const material = new THREE.MeshBasicMaterial({ map, transparent: true, opacity: 0, toneMapped: false, depthWrite: false });
-        // depth of field: far cards sample a blurrier mip level of their texture
+        const material = new THREE.MeshBasicMaterial({ map, transparent: true, toneMapped: false, depthWrite: false });
+        // depth of field: far cards sample a blurrier mip level of their texture;
+        // turning fast smears every card sideways (a few taps along x)
         const bias = { value: 0 };
+        const smear = { value: 0 };
         material.onBeforeCompile = (shader) => {
           shader.uniforms.uBias = bias;
+          shader.uniforms.uSmear = smear;
           shader.fragmentShader = shader.fragmentShader
-            .replace('void main() {', 'uniform float uBias;\nvoid main() {')
-            .replace('texture2D( map, vMapUv )', 'texture2D( map, vMapUv, uBias )');
+            .replace(
+              'void main() {',
+              `uniform float uBias, uSmear;
+vec4 smearMap(vec2 uv) {
+  float lod = uBias + uSmear * 40.0;
+  vec4 c = vec4(0.0);
+  for (int i = 0; i < 5; i++) c += texture2D(map, uv + vec2((float(i) * 0.25 - 0.5) * uSmear, 0.0), lod);
+  return c * 0.2;
+}
+void main() {`,
+            )
+            .replace('texture2D( map, vMapUv )', 'smearMap( vMapUv )');
         };
         const m = new THREE.Mesh(geometry, material);
         m.renderOrder = 2;
-        m.userData = { card: c, light: 0, lift: 1, op: 0, bias };
+        m.userData = { card: c, light: REST_LIGHT[c.tier], lift: 1, bias, smear };
         return m;
       }),
     [cards, textures],
@@ -112,7 +122,9 @@ export default function Constellation({ end }) {
     G.arrive = clamp01(range(anim.p, s0 + 0.02, s1 - 0.005));
     G.camera = camera;
     const g = group.current;
-    g.visible = G.arrive > 0;
+    // the field is already in place behind the lens: it shows through the bore
+    // as soon as the iris starts to open, so the dive exits straight into it
+    g.visible = anim.p > TIMELINE.iris[0];
     const inGalaxy = G.arrive > 0.96;
     if (inGalaxy !== wasIn.current) {
       wasIn.current = inGalaxy;
@@ -121,12 +133,12 @@ export default function Constellation({ end }) {
     if (!g.visible) return;
 
     g.position.set(end.x, end.y, end.z);
-    if (inGalaxy) steer(dt, camera, size);
+    if (inGalaxy) steer(dt, camera);
     else {
-      // ease the view back to centre when scrolling out of the galaxy
-      G.yaw = damp(G.yaw, 0, 3, dt);
+      // scrolling back out: the ring settles to its home turn, the view levels
+      G.vYaw = damp(G.vYaw, 0, 4, dt);
+      G.yaw = damp(G.yaw + G.vYaw * dt, PERIOD * Math.round(G.yaw / PERIOD), 3, dt);
       G.pitch = damp(G.pitch, 0, 3, dt);
-      G.vYaw = G.vPitch = 0;
     }
 
     // hover: ray from the cursor (mouse only — touch selects on tap)
@@ -135,8 +147,8 @@ export default function Constellation({ end }) {
       ndc.set(G.pointer.x, -G.pointer.y);
       raycaster.setFromCamera(ndc, camera);
       const hit = raycaster.intersectObjects(meshes, false)[0];
-      if (hit && hit.object.userData.op > 0.6) hot = meshes.indexOf(hit.object);
-    } else if (!G.pointer.mouse) hot = G.hotCard;
+      if (hit) hot = meshes.indexOf(hit.object);
+    } else if (inGalaxy && !G.pointer.mouse) hot = G.hotCard;
     G.hotCard = hot;
     const item = hot >= 0 ? cards[hot].item : -1;
     if (item !== lastItem.current) {
@@ -145,26 +157,25 @@ export default function Constellation({ end }) {
     }
 
     const t = clock.elapsedTime;
+    const speed = Math.min(Math.abs(G.vYaw) / SPEED, 1);
     meshes.forEach((m, i) => {
       const c = m.userData.card;
-      const k = easeOut(clamp01((G.arrive * 1.55 - c.delay) / 1));
-      const d = c.dist * (1 + (1 - k) * 0.9);
-      const bob = anim.reduced ? 0 : Math.sin(t * 0.35 + c.bob) * 0.25;
-      direction(c.yaw, c.pitch + bob, dir).multiplyScalar(d);
-      m.position.copy(dir);
-      m.rotation.set((c.pitch + bob) * DEG, -c.yaw * DEG, 0, 'YXZ'); // face the centre
-      const h = 2 * c.dist * Math.tan((c.h / 2) * DEG);
       const ud = m.userData;
+      const bob = anim.reduced ? 0 : Math.sin(t * 0.35 + c.bob) * 0.25;
+      const yaw = wrapYaw(c.yaw - G.yaw);
+      direction(yaw, c.pitch + bob, dir).multiplyScalar(c.dist);
+      m.position.copy(dir);
+      m.rotation.set((c.pitch + bob) * DEG, -yaw * DEG, 0, 'YXZ'); // face the centre
+      const h = 2 * c.dist * Math.tan((c.h / 2) * DEG);
       ud.lift = damp(ud.lift, i === hot ? 1.05 : 1, 8, dt);
-      m.scale.set(h * c.aspect * ud.lift, h * ud.lift, 1);
+      m.scale.set(h * c.aspect * ud.lift * (1 + speed * 0.06), h * ud.lift, 1);
       // far cards are darker and softer; everything dims around a hovered card
       const rest = REST_LIGHT[c.tier];
-      const target = hot < 0 ? rest : i === hot ? 1 : c.item === item ? 0.4 : 0.12;
+      const target = hot < 0 ? rest : i === hot ? 1 : c.item === item ? 0.35 : 0.1;
       ud.light = damp(ud.light, target, 6, dt);
       m.material.color.setScalar(ud.light);
       ud.bias.value = damp(ud.bias.value, i === hot ? 0 : REST_BLUR[c.tier], 6, dt);
-      ud.op = k;
-      m.material.opacity = k;
+      ud.smear.value = speed * speed * 0.05;
     });
   });
 
@@ -176,4 +187,3 @@ export default function Constellation({ end }) {
     </group>
   );
 }
-
