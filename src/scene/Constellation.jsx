@@ -9,14 +9,17 @@ const geometry = new THREE.PlaneGeometry(1, 1);
 const damp = THREE.MathUtils.damp;
 const REST_LIGHT = [0.92, 0.6]; // near copy, far copy
 const REST_BLUR = [0, 1.6]; // texture LOD bias, near to far
-const SPEED = 42; // fastest turn, degrees / second
-const DEAD = 0.12; // cursor dead zone around the centre (NDC)
+const SPEED = 46; // fastest turn, degrees / second
+const DEAD = 0.14; // cursor dead zone around the centre (NDC)
+const TURN_ZONE = 0.62; // past this the cursor is steering: cards under it never interrupt the turn
+const HOVER_SPEED = 10; // otherwise a card only catches the cursor once the ring has slowed below this
 
-// Soft response curve for the cursor: nothing in the dead zone, then an
-// S-curve up to full strength at the edge, so turning eases in and out.
+// Soft response curve for the cursor: nothing in the dead zone, a gentle
+// creep just outside it, then a smooth rise to full speed at the edge.
 function curve(v) {
   const x = clamp01((Math.abs(v) - DEAD) / (1 - DEAD));
-  return Math.sign(v) * x * x * (3 - 2 * x);
+  const s = x * x * (3 - 2 * x);
+  return Math.sign(v) * s * s;
 }
 
 // Steers the view. The ring of cards turns endlessly (it wraps), with a speed
@@ -38,8 +41,8 @@ function steer(dt, camera) {
     return;
   }
   if (p.mouse && p.inside) {
-    // a hovered card holds still, unless the cursor is pushing at the very edge
-    const hold = G.hotCard < 0 ? 1 : Math.abs(p.x) > 0.85 ? 0.3 : 0;
+    // a hovered card (only possible away from the edges) eases the turn to a stop
+    const hold = G.hotCard < 0 || Math.abs(p.x) >= TURN_ZONE ? 1 : 0;
     tYaw = curve(p.x) * SPEED * hold;
     tPitch = -curve(p.y) * G.maxPitch;
   } else if (!p.mouse && !p.dragging && performance.now() - G.touchedAt > 2500) {
@@ -47,9 +50,9 @@ function steer(dt, camera) {
     tYaw = G.drift * 5;
     tPitch = 0;
   }
-  if (!p.dragging) G.vYaw = damp(G.vYaw, tYaw, p.mouse ? 2.4 : 1.5, dt);
+  if (!p.dragging) G.vYaw = damp(G.vYaw, tYaw, p.mouse ? 3.6 : 1.5, dt);
   G.yaw += G.vYaw * dt;
-  G.pitch = damp(G.pitch, Math.max(-G.maxPitch, Math.min(G.maxPitch, tPitch)), 2.2, dt);
+  G.pitch = damp(G.pitch, Math.max(-G.maxPitch, Math.min(G.maxPitch, tPitch)), 3, dt);
 }
 
 export default function Constellation({ end }) {
@@ -143,7 +146,8 @@ void main() {`,
 
     // hover: ray from the cursor (mouse only — touch selects on tap)
     let hot = -1;
-    if (inGalaxy && G.pointer.mouse && G.pointer.inside) {
+    const steady = Math.abs(G.pointer.x) < TURN_ZONE || Math.abs(G.vYaw) < HOVER_SPEED;
+    if (inGalaxy && G.pointer.mouse && G.pointer.inside && steady) {
       ndc.set(G.pointer.x, -G.pointer.y);
       raycaster.setFromCamera(ndc, camera);
       const hit = raycaster.intersectObjects(meshes, false)[0];
