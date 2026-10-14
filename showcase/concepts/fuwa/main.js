@@ -203,7 +203,7 @@ const CHARACTERS = [
 const sprite = $('#sprite');
 sprite.innerHTML = '<defs>' + CHARACTERS.map(c => `<symbol id="a-${c.id}" viewBox="-100 -100 200 200" overflow="visible">${c.art()}</symbol>`).join('') +
   `<symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.2 0 3.6 1.2 5.3 3.1 1.7-1.9 3.1-3.1 5.3-3.1 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" fill="#f2798b"/></symbol></defs>`;
-const useSvg = (id, cls = '') => `<svg class="${cls}" viewBox="0 0 200 200" aria-hidden="true"><use href="#a-${id}"/></svg>`;
+const svgUse = (id, cls = '') => `<svg class="${cls}" viewBox="0 0 200 200" aria-hidden="true"><use href="#a-${id}"/></svg>`;
 const heartSvg = '<svg viewBox="0 0 24 24"><use href="#i-heart"/></svg>';
 
 /* ------------------------------------------------------------------ */
@@ -295,7 +295,7 @@ function spawn() {
     const s = base * (0.82 + ((i * 37) % 10) / 22);
     const el = document.createElement('div');
     el.className = 'critter'; el.style.width = el.style.height = s + 'px';
-    el.innerHTML = useSvg(ch.id);
+    el.innerHTML = svgUse(ch.id);
     field.appendChild(el);
     // place on a ring around the copy, jittered
     const ang = (i / n) * Math.PI * 2 + Math.random() * .4;
@@ -449,7 +449,7 @@ cards.innerHTML = CHARACTERS.map((c, i) => `
   <article class="card reveal" tabindex="0" style="--bg:${c.bg};--d:${(i % 4) * .08}s" aria-label="${c.name}, ${c.role}">
     <div class="card-art" style="--bd:${-i * .6}s">
       <span class="rarity ${c.rare === 'Rare' ? 'r' : c.rare === 'Ultra fluffy' ? 'u' : ''}">${c.rare}</span>
-      ${useSvg(c.id)}
+      ${svgUse(c.id)}
     </div>
     <div class="card-name"><h3>${c.name}</h3><span lang="ja">${c.jp}</span></div>
     <p class="card-role">${c.role}</p>
@@ -601,7 +601,7 @@ form.addEventListener('submit', e => {
 
 /* footer peekers */
 $('#peek').innerHTML = [['mikan', 9, -8], ['sasa', 21, 5], ['wata', 35, -5], ['kuro', 53, -3], ['kinako', 77, 6]].map(([id, x, r]) =>
-  `<div class="pk" style="left:${x}%;rotate:${r}deg">${useSvg(id)}</div>`).join('');
+  `<div class="pk" style="left:${x}%;rotate:${r}deg">${svgUse(id)}</div>`).join('');
 
 /* init after layout/fonts */
 function init() { measure(); buildTrail(); onScroll(); }

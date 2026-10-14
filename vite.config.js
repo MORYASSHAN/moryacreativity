@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { cpSync } from 'node:fs';
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
@@ -17,12 +16,4 @@ const showcase = () => ({
 export default defineConfig({
   base: './',
   plugins: [react(), showcase()],
-=======
-import react from '@vitejs/plugin-react'
-import { defineConfig } from 'vite'
-
-export default defineConfig({
-  base: './',
-  plugins: [react()],
->>>>>>> 21c1f2f8b3fa1d6b7418bbc8c15eaf971715f44e
 })

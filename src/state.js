@@ -1,12 +1,8 @@
 import { useSyncExternalStore } from 'react';
 
 // React-facing state: only what the DOM layer re-renders on.
-<<<<<<< HEAD
 //   galaxy: the dive has arrived among the projects; hot: hovered project index
 let state = { ready: false, progress: 0, galaxy: false, hot: -1 };
-=======
-let state = { ready: false, progress: 0 };
->>>>>>> 21c1f2f8b3fa1d6b7418bbc8c15eaf971715f44e
 const subs = new Set();
 
 export function setState(patch) {

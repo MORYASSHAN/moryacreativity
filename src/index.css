@@ -3,10 +3,7 @@
   --ink: #f2efe9;
   --muted: rgba(242, 239, 233, 0.6);
   --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-<<<<<<< HEAD
   --display: 'Playfair Display', Georgia, 'Times New Roman', serif;
-=======
->>>>>>> 21c1f2f8b3fa1d6b7418bbc8c15eaf971715f44e
   color-scheme: dark;
 }
 
@@ -38,11 +35,7 @@ body {
 }
 
 #dive {
-<<<<<<< HEAD
   height: 1125vh;
-=======
-  height: 1500vh;
->>>>>>> 21c1f2f8b3fa1d6b7418bbc8c15eaf971715f44e
 }
 
 .overlay {
@@ -124,7 +117,6 @@ body {
   }
 }
 
-<<<<<<< HEAD
 /* ---------- the project field in the galaxy ---------- */
 .galaxy-layer {
   position: absolute;
@@ -215,8 +207,6 @@ body {
   outline-offset: 4px;
 }
 
-=======
->>>>>>> 21c1f2f8b3fa1d6b7418bbc8c15eaf971715f44e
 .sr-only {
   position: absolute;
   width: 1px;
